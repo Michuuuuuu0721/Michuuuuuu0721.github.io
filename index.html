@@ -3,7 +3,11 @@ layout: page
 description: "「我在。」"
 ---
 
-{% include intro-header.html type='page' long=true %}
+<style>
+  .intro-header {
+    height: 100vh !important;  /* 或者 min-height: 80vh */
+  }
+</style>
 
 {% for post in paginator.posts %}
 <div class="post-preview">
