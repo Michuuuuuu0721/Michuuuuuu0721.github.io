@@ -1,0 +1,25 @@
+---
+layout: default
+---
+
+<!-- Page Header -->
+{% include intro-header.html type='page' %}
+
+<!-- Main Content -->
+<article>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        {{ content }}
+
+        <!-- 可选：显示项目额外信息 -->
+        {% if page.repo %}
+          <p><strong>Repository:</strong> <a href="{{ page.repo }}">{{ page.repo }}</a></p>
+        {% endif %}
+        {% if page.demo %}
+          <p><strong>Live Demo:</strong> <a href="{{ page.demo }}">{{ page.demo }}</a></p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</article>
