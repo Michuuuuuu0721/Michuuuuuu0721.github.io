@@ -1,11 +1,6 @@
-
 ---
-title: "我的第一个项目"
-subtitle: "测试项目"
+title: "测试项目"
 date: 2026-06-25
-repo: "https://github.com/yourname/project1"
-demo: "https://project1.example.com"
-tags: [Jekyll, JavaScript]
 ---
 
 ## 项目简介
