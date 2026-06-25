@@ -90,3 +90,9 @@ header-img: "img/bg-projects.jpg"
     color: #555;
   }
 </style>
+
+{% if site.projects %}
+  <p>找到 {{ site.projects | size }} 个项目</p>
+{% else %}
+  <p>site.projects 不存在或为空</p>
+{% endif %}
