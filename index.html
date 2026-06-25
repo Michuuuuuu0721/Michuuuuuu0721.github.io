@@ -3,9 +3,35 @@ layout: page
 description: "「我在。」"
 ---
 
+<!-- ===== 首页专属样式：图片变长 + 文字居中 ===== -->
 <style>
+  /* 1. 让头部图片占满屏幕高度（或 90vh） */
   .intro-header {
-    height: 60vh !important;  /* 或者 min-height: 80vh */
+    height: 90vh;               /* 全屏高度，也可用 90vh 留一点滚动提示 */
+    min-height: 500px;           /* 防止在超小屏上太矮 */
+    display: flex;
+    align-items: center;         /* 垂直居中 */
+    justify-content: center;     /* 水平居中（本身已有，但以防万一） */
+  }
+
+  /* 2. 移除可能导致偏移的 padding/margin */
+  .intro-header .container,
+  .intro-header .row,
+  .intro-header .col-lg-8,
+  .intro-header .site-heading {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* 3. 确保文字块在容器中居中 */
+  .intro-header .site-heading {
+    text-align: center;
+    width: 100%;
+    /* 如果原本有 transform 或位置偏移，重置 */
+    transform: none;
+    position: static;
   }
 </style>
 
