@@ -3,6 +3,8 @@ layout: page
 description: "「我在。」"
 ---
 
+{% include intro-header.html type='page' long=true %}
+
 {% for post in paginator.posts %}
 <div class="post-preview">
     <a href="{{ post.url | prepend: site.baseurl }}">
