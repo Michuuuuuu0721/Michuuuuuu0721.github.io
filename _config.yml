@@ -59,6 +59,11 @@ kramdown:
       start_line: 1
 
 
+collections:
+  projects:
+    output: true
+    permalink: /projects/:path/
+    layout: project
 
 # Netease settings
 netease_comment: false
