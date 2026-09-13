@@ -15,7 +15,7 @@ permalink: /endzustand/
             /* 如果是 .woff2 文件，将上面一行改为： format('woff2') */
         }
         /* 移除浏览器默认边距，让背景全黑 */
-        body {
+        html, body {
             margin: 0;
             background-color: black;
             height: 100vh;
@@ -25,12 +25,23 @@ permalink: /endzustand/
             overflow: hidden;        /* 禁止滚动条 */
         }
                 /* 基础文字样式（两行共有） */
-        .text-line {
-            font-size: 14px;
-            font-family: 'Determination', sans-serif;
-            letter-spacing: 1px;
-            line-height: 1.8;        /* 调整两行字之间的行高间距 */
-            text-align: center;
+        .text-container {
+            width: 100%;
+            height: 100%;
+            display: flex !important;
+            flex-direction: column !important; /* 强制上下排列 */
+            justify-content: center !important;/* 垂直居中 */
+            align-items: center !important;    /* 水平居中 */
+        }
+        /* 每行文字的独立行容器（强制独占一行） */
+        .text-row {
+            display: block !important;         /* 块级元素强制换行 */
+            width: 100%;                       /* 撑满宽度确保独占一行 */
+            text-align: center !important;     /* 文字在行内居中 */
+            font-size: 14px !important;
+            font-family: 'CustomFont', sans-serif !important;
+            letter-spacing: 1px !important;
+            box-sizing: border-box;
         }
         /* 第一行：显示的白色小字 */
         .visible-text {
@@ -49,10 +60,11 @@ permalink: /endzustand/
     </style>
 </head>
 <body>
-    <!-- 第一行：正常可见的字 -->
-    <div class="text-line visible-text">"NICE TRY."</div>
-    <!-- 第二行：藏起来的黑色字（鼠标刮开涂白可见） -->
-    <div class="text-line hidden-text">熱_の法_は_系の乱_である_増える事_の理かな</div>
-
+    <div class="text-container">
+        <!-- 第一行：正常可见的字 -->
+        <div class="text-line visible-text">"NICE TRY."</div>
+        <!-- 第二行：藏起来的黑色字（鼠标刮开涂白可见） -->
+        <div class="text-line hidden-text">熱_の法_は_系の乱_である_増える事_の理かな</div>
+    </div>
 </body>
 </html>
