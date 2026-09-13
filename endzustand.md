@@ -2,7 +2,6 @@
 layout: null
 permalink: /endzustand/
 ---
-<!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
@@ -11,7 +10,7 @@ permalink: /endzustand/
     <style>
         @font-face {
             font-family: 'Determination';     /* 给你的字体起个名字 */
-            src: url('./fonts/DeterminationMonoWebRegular-Z5oq.ttf') format('truetype'); /* 字体文件的相对路径 */
+            src: url('./f   onts/DeterminationMonoWebRegular-Z5oq.ttf') format('truetype'); /* 字体文件的相对路径 */
             /* 如果是 .otf 文件，将上面一行改为： format('opentype') */
             /* 如果是 .woff2 文件，将上面一行改为： format('woff2') */
         }
