@@ -24,18 +24,35 @@ permalink: /endzustand/
             align-items: center;     /* 垂直居中 */
             overflow: hidden;        /* 禁止滚动条 */
         }
-        /* 设置白色的、较小的文字样式 */
-        .centered-text {
-            color: white;
-            font-size: 14px;         /* 14px 属于偏小的字号 */
+                /* 基础文字样式（两行共有） */
+        .text-line {
+            font-size: 14px;
             font-family: 'Determination', sans-serif;
-            letter-spacing: 1px;     /* 字间距（可选） */
+            letter-spacing: 1px;
+            line-height: 1.8;        /* 调整两行字之间的行高间距 */
+            text-align: center;
+        }
+        /* 第一行：显示的白色小字 */
+        .visible-text {
+            color: white;
+        }
+        /* 第二行：隐藏的黑色小字 */
+        .hidden-text {
+            color: black;
+            user-select: text;       /* 确保用户可以正常划选这段字 */
+        }
+        /* 可选：如果你希望用户鼠标划选时，高亮颜色也更特别（比如黑底白字反过来），可以保留以下代码 */
+        .hidden-text::selection {
+            background: white;       /* 划选时的背景色变为白色 */
+            color: black;            /* 划选时的文字颜色变为黑色 */
         }
     </style>
 </head>
 <body>
-
-    <div class="centered-text">"NICE TRY."</div>
+    <!-- 第一行：正常可见的字 -->
+    <div class="text-line visible-text">"NICE TRY."</div>
+    <!-- 第二行：藏起来的黑色字（鼠标刮开涂白可见） -->
+    <div class="text-line hidden-text">熱_の法_は_系の乱_である_増える事_の理かな</div>
 
 </body>
 </html>
