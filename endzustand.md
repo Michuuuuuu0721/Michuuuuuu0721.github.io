@@ -10,19 +10,18 @@ permalink: /endzustand/
     <style>
         @font-face {
             font-family: 'Determination';     /* 给你的字体起个名字 */
-            src: url('./f   onts/DeterminationMonoWebRegular-Z5oq.ttf') format('truetype'); /* 字体文件的相对路径 */
+            src: url('./fonts/DeterminationMonoWebRegular-Z5oq.ttf') format('truetype'); /* 字体文件的相对路径 */
             /* 如果是 .otf 文件，将上面一行改为： format('opentype') */
             /* 如果是 .woff2 文件，将上面一行改为： format('woff2') */
         }
         /* 移除浏览器默认边距，让背景全黑 */
         html, body {
-            margin: 0;
-            background-color: black;
-            height: 100vh;
-            display: flex;
-            justify-content: center; /* 水平居中 */
-            align-items: center;     /* 垂直居中 */
-            overflow: hidden;        /* 禁止滚动条 */
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: black !important;
+            width: 100% !important;
+            height: 100vh !important;
+            overflow: hidden !important;
         }
                 /* 基础文字样式（两行共有） */
         .text-container {
