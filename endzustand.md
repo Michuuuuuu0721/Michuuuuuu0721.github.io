@@ -39,7 +39,7 @@ permalink: /endzustand/
             width: 100%;                       /* 撑满宽度确保独占一行 */
             text-align: center !important;     /* 文字在行内居中 */
             font-size: 14px !important;
-            font-family: 'CustomFont', sans-serif !important;
+            font-family: 'DETERMINATION', sans-serif !important;
             letter-spacing: 1px !important;
             box-sizing: border-box;
         }
