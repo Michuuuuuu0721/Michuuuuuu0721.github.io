@@ -38,7 +38,7 @@ permalink: /endzustand/
             width: 100%;                       /* 撑满宽度确保独占一行 */
             text-align: center !important;     /* 文字在行内居中 */
             font-size: 14px !important;
-            font-family: 'DETERMINATION', sans-serif !important;
+            font-family: 'Determination', sans-serif !important;
             letter-spacing: 1px !important;
             box-sizing: border-box;
         }
@@ -60,9 +60,7 @@ permalink: /endzustand/
 </head>
 <body>
     <div class="text-container">
-        <!-- 第一行：正常可见的字 -->
         <div class="text-line visible-text">"NICE TRY."</div>
-        <!-- 第二行：藏起来的黑色字（鼠标刮开涂白可见） -->
         <div class="text-line hidden-text">熱_の法_は_系の乱_である_増える事_の理かな</div>
     </div>
 </body>
