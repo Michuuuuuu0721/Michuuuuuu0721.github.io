@@ -55,6 +55,21 @@ permalink: /guide000/
             letter-spacing: 1px;
             text-align: center;
         }
+        /* 💡 新增：用于将提示文字和输入框横向并排的容器 */
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        /* 💡 新增：输入框前缀文字的样式 */
+        .input-prefix {
+            color: #666; /* 使用低调的暗灰色 */
+            font-size: 14px;
+            margin-right: 8px; /* 和输入框保持一点间距 */
+            font-family: monospace; /* 使用等宽字体，更符合网页后缀的科技感 */
+            user-select: none; /* 防止用户误选这段文字 */
+        }
         .answer-input {
             background-color: #111;
             border: 1px solid #333;
@@ -84,27 +99,34 @@ permalink: /guide000/
     <div class="quiz-container">       
         <!-- 问题 1 (默认可见) -->
         <div class="quiz-column" id="col-1">
-            <div class="question-text">问题一：世界上第一台计算机叫什么？</div>
-            <input type="text" class="answer-input" id="input-1" placeholder="请输入答案..." autocomplete="off">
+            <div class="question-text">Step 1: By using LSB, find the message hidden in the image. (Try using different colour channels)</div>
+            <div class="input-group">
+                <input type="text" class="answer-input" id="input-1" placeholder="Enter..." autocomplete="off">
+            </div>
         </div>
         <!-- 问题 2 (默认锁定) -->
         <div class="quiz-column locked" id="col-2">
-            <div class="question-text">问题二：1加1等于几？</div>
-            <input type="text" class="answer-input" id="input-2" placeholder="请输入答案..." autocomplete="off">
+            <div class="question-text">Step 2: Find the designated key by analysing the length of ciphertext and the source image.</div>
+            <div class="input-group">
+                <input type="text" class="answer-input" id="input-2" placeholder="Enter..." autocomplete="off">
+            </div>
         </div>
         <!-- 问题 3 (默认锁定) -->
         <div class="quiz-column locked" id="col-3">
-            <div class="question-text">问题三：最终关卡：本网站的博主是谁？</div>
-            <input type="text" class="answer-input" id="input-3" placeholder="请输入答案..." autocomplete="off">
+            <div class="question-text">Step 3: Hence, by using the designated key, deduce the cleartext using XOR.</div>
+            <div class="input-group">
+                <span class="input-prefix">/</span>
+                <input type="text" class="answer-input" id="input-3" placeholder="Enter..." autocomplete="off">
+            </div>
         </div>
     </div>
     <!-- JavaScript 逻辑：判断对错与解锁下一关 -->
     <script>
         // 🛠️ 在这里配置你的正确答案（支持大小写模糊匹配）
         const config = {
-            q1: { answer: "ENIAC", nextCol: "col-2" },
-            q2: { answer: "2", nextCol: "col-3" },
-            q3: { answer: "michu", nextCol: null } // 最后一题，没有下一关
+            q1: { answer: "00 2f 36 2e 3d 36 35 33 3a 2c", nextCol: "col-2" },
+            q2: { answer: "EARTH", nextCol: "col-3" },
+            q3: { answer: "ENDZUSTAND", nextCol: null } // 最后一题，没有下一关
         };
         // 监听第一个输入框
         document.getElementById('input-1').addEventListener('input', function() {
@@ -116,10 +138,15 @@ permalink: /guide000/
         });
         // 监听第三个输入框
         document.getElementById('input-3').addEventListener('input', function() {
-            // 最后一题正确后的特殊处理
+             // 检查第三题答案（确保 config.q3.answer 依然匹配你的标准答案）
             if (this.value.trim().toLowerCase() === config.q3.answer.toLowerCase()) {
-                this.classList.add('correct');
-                alert('恭喜你，全部通关！'); // 这里可以改成跳转或显示通关彩蛋
+                // 1. 标记第三个输入框为正确（变绿）
+                this.classList.add('correct');        
+                // 2. 稍微延迟 0.8 秒（800毫秒），让用户看到输入框变绿的成功反馈，然后丝滑跳转
+                setTimeout(() => {
+                    // 使用绝对路径跳转到你的 endzustand 页面
+                    window.location.href = '/endzustand/';
+                }, 800);     
             }
         });
         // 通用的答案检查函数
