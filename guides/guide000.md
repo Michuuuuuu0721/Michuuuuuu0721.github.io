@@ -99,7 +99,7 @@ permalink: /guide000/
     <div class="quiz-container">       
         <!-- 问题 1 (默认可见) -->
         <div class="quiz-column" id="col-1">
-            <div class="question-text">Step 1: By LSB steganography, find the message hidden in the image. (hexadecimal values XX XX XX etc.)</div>
+            <div class="question-text">Step 1: By LSB steganography, find the message hidden in the image.<br>(hexadecimal values XX XX XX etc.)</div>
             <div class="input-group">
                 <input type="text" class="answer-input" id="input-1" placeholder="Enter..." autocomplete="off">
             </div>
