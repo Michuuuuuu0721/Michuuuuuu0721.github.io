@@ -99,7 +99,7 @@ permalink: /guide000/
     <div class="quiz-container">       
         <!-- 问题 1 (默认可见) -->
         <div class="quiz-column" id="col-1">
-            <div class="question-text">Step 1: By using LSB, find the message hidden in the image. (hexadecimal values XX XX XX etc.)</div>
+            <div class="question-text">Step 1: By LSB steganography, find the message hidden in the image. (hexadecimal values XX XX XX etc.)</div>
             <div class="input-group">
                 <input type="text" class="answer-input" id="input-1" placeholder="Enter..." autocomplete="off">
             </div>
@@ -113,7 +113,7 @@ permalink: /guide000/
         </div>
         <!-- 问题 3 (默认锁定) -->
         <div class="quiz-column locked" id="col-3">
-            <div class="question-text">Step 3: Hence, by using the designated key, deduce the cleartext using XOR.</div>
+            <div class="question-text">Step 3: Hence, by using the designated key, deduce the plaintext using XOR.</div>
             <div class="input-group">
                 <span class="input-prefix">/</span>
                 <input type="text" class="answer-input" id="input-3" placeholder="Enter..." autocomplete="off">
