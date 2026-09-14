@@ -50,7 +50,7 @@ permalink: /guide000/
         /* 5. 文字与输入框样式 */
         .question-text {
             color: white;
-            font-size: 16px;
+            font-size: 14px;
             margin-bottom: 20px;
             letter-spacing: 1px;
             text-align: center;
@@ -74,8 +74,8 @@ permalink: /guide000/
             background-color: #111;
             border: 1px solid #333;
             color: white;
-            padding: 10px 15px;
-            font-size: 14px;
+            padding: 5px 15px;
+            font-size: 12px;
             border-radius: 4px;
             outline: none;
             text-align: center;
