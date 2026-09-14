@@ -99,14 +99,14 @@ permalink: /guide000/
     <div class="quiz-container">       
         <!-- 问题 1 (默认可见) -->
         <div class="quiz-column" id="col-1">
-            <div class="question-text">Step 1: By using LSB, find the message hidden in the image. (Try using different colour channels)</div>
+            <div class="question-text">Step 1: By using LSB, find the message hidden in the image. (hexadecimal values XX XX XX)</div>
             <div class="input-group">
                 <input type="text" class="answer-input" id="input-1" placeholder="Enter..." autocomplete="off">
             </div>
         </div>
         <!-- 问题 2 (默认锁定) -->
         <div class="quiz-column locked" id="col-2">
-            <div class="question-text">Step 2: Find the designated key by analysing the length of ciphertext and the source image.</div>
+            <div class="question-text">Step 2: Find the designated key by analysing the image source and the length of ciphertext.</div>
             <div class="input-group">
                 <input type="text" class="answer-input" id="input-2" placeholder="Enter..." autocomplete="off">
             </div>
