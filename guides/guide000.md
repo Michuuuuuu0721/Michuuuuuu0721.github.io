@@ -1,6 +1,6 @@
 ---
 layout: null
-permalink: /guide000
+permalink: /guide000/
 ---
 <html lang="zh">
 <head>
