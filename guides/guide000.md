@@ -21,6 +21,7 @@ permalink: /guide000/
         /* 2. 横向三等分大容器 */
         .quiz-container {
             display: flex !important;
+            flex-direction: row; /* PC 端横向并排 */
             width: 100%;
             height: 100%;
             box-sizing: border-box;
@@ -41,6 +42,29 @@ permalink: /guide000/
         /* 移除最后一列的分界线 */
         .quiz-column:last-child {
             border-right: none;
+            border-bottom: none;
+        }
+        /* ======================================================== */
+        /* 🛠️ 新增：移动端（手机）特调样式（当屏幕宽度小于 768px 时生效） */
+        /* ======================================================== */
+        @media (max-width: 1024px) {
+             /* 让外层容器允许纵向滚动，并关闭横向滚动 */
+            html, body {
+                overflow-x: hidden !important;
+                overflow-y: auto !important; /* 允许手机上下滑动查看题目 */
+            }
+            .quiz-container {
+                flex-direction: column !important; /* 核心：在手机上改成上下垂直排列 */
+                height: auto !important;           /* 允许高度自适应延伸 */
+                width: 100% !important;
+            }
+            .quiz-column {
+                flex: none !important;
+                width: 100% !important;
+                height: 100vh !important;          /* 关键：每一道题依然完美独占一个完整的手机屏幕 */
+                border-right: none !important;     /* 移除手机不需要的左右分界线 */
+                border-bottom: 1px solid #111;     /* 改为微弱的上下分界线 */
+            }
         }
         /* 4. 关键：还未解锁的题目样式 —— 完全隐藏 */
         .quiz-column.locked {
@@ -115,7 +139,7 @@ permalink: /guide000/
         <div class="quiz-column locked" id="col-3">
             <div class="question-text">Step 3: Hence, by using the designated key, deduce the plaintext using XOR.</div>
             <div class="input-group">
-                <span class="input-prefix">/</span>
+                <span class="input-prefix">./</span>
                 <input type="text" class="answer-input" id="input-3" placeholder="Enter..." autocomplete="off">
             </div>
         </div>
