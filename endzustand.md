@@ -24,7 +24,7 @@ permalink: /endzustand/
             overflow: hidden !important;
             box-sizing: border-box;
         }
-                /* 基础文字样式（两行共有） */
+        /* 基础文字样式（两行共有） */
         .text-container {
             width: 100%;
             height: 100%;
