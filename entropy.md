@@ -36,7 +36,7 @@ permalink: /entropy/
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 800px;
+            max-width: 1200px;
         }
         /* 4. 随机问题文本样式 */
         .question-text {
@@ -48,7 +48,7 @@ permalink: /entropy/
             line-height: 1.6;
             min-height: 50px; /* 防止题目字数不同导致布局跳动 */
             width: 100%;
-            max-width: 700px; 
+            max-width: 1000px; 
             box-sizing: border-box;
             padding: 0 20px;
         }
