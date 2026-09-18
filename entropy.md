@@ -103,7 +103,7 @@ permalink: /entropy/
             <!-- 下方输入框：填写答案 -->
             <input type="text" name="Answer" class="answer-input" placeholder="" required autocomplete="off">
             <!-- 提交按钮 -->
-            <button type="submit" class="submit-btn"></button>
+            <button type="submit" class="submit-btn">SUBMIT</button>
         </form>
     </div>
     <script>
