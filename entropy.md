@@ -99,11 +99,11 @@ permalink: /entropy/
             <!-- 核心：随机问题显示区域 -->
             <div class="question-text" id="display-question">Loading...</div>
             <!-- 上方输入框：填写姓名 -->
-            <input type="text" name="Name" class="answer-input" placeholder="Your Name" required autocomplete="off">
+            <input type="text" name="Name" class="answer-input" placeholder="" required autocomplete="off">
             <!-- 下方输入框：填写答案 -->
-            <input type="text" name="Answer" class="answer-input" placeholder="Your Answer" required autocomplete="off">
+            <input type="text" name="Answer" class="answer-input" placeholder="" required autocomplete="off">
             <!-- 提交按钮 -->
-            <button type="submit" class="submit-btn">SUBMIT</button>
+            <button type="submit" class="submit-btn"></button>
         </form>
     </div>
     <script>
