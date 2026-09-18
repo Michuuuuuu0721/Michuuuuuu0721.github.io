@@ -79,6 +79,24 @@ permalink: /guide000/
             letter-spacing: 1px;
             text-align: center;
         }
+        /* ======================================================== */
+        /* 💡 新增：暗色遮罩提示文本样式（黑幕效果） */
+        /* ======================================================== */
+        .hint-spoiler {
+            background-color: #222;       /* 默认覆盖一层深灰色块 */
+            color: #222;                  /* 文字颜色与色块相同，达到隐藏效果 */
+            padding: 2px 6px;             /* 给色块加一点内边距，看起来更像标签 */
+            border-radius: 4px;           /* 微弱的圆角，更精致 */
+            cursor: help;                 /* 鼠标悬停时指针变成问号，暗示可以交互 */
+            transition: all 0.3s ease;    /* 显现时的平滑过渡动画 */
+            user-select: none;            /* 未悬停时禁止强行复制选中文本 */
+        }
+        /* 鼠标悬停（Hover）或手指触摸时的样式 */
+        .hint-spoiler:hover {
+            background-color: #333;       /* 底色轻微变亮 */
+            color: white;                 /* 文字变白显现出来 */
+            user-select: text;            /* 显现后允许正常选中文本 */
+        }
         /* 💡 新增：用于将提示文字和输入框横向并排的容器 */
         .input-group {
             display: flex;
@@ -123,7 +141,8 @@ permalink: /guide000/
     <div class="quiz-container">       
         <!-- 问题 1 (默认可见) -->
         <div class="quiz-column" id="col-1">
-            <div class="question-text">Step 1: By LSB steganography, find the message hidden in the image.<br>(hexadecimal values XX XX XX etc.)</div>
+            <!-- 💡 增加了 <span class="hint-spoiler"> 包裹目标词汇 -->
+            <div class="question-text">Step 1: By <span class="hint-spoiler">LSB steganography</span>, find the message hidden in the image.<br>(hexadecimal values XX XX XX etc.)</div>
             <div class="input-group">
                 <input type="text" class="answer-input" id="input-1" placeholder="Enter..." autocomplete="off">
             </div>
@@ -137,7 +156,8 @@ permalink: /guide000/
         </div>
         <!-- 问题 3 (默认锁定) -->
         <div class="quiz-column locked" id="col-3">
-            <div class="question-text">Step 3: Hence, by using the designated key, deduce the plaintext using XOR.</div>
+            <!-- 💡 增加了 <span class="hint-spoiler"> 包裹目标词汇 -->
+            <div class="question-text">Step 3: Hence, by using the designated key, deduce the plaintext using <span class="hint-spoiler">XOR</span>.</div>
             <div class="input-group">
                 <span class="input-prefix">./</span>
                 <input type="text" class="answer-input" id="input-3" placeholder="Enter..." autocomplete="off">
@@ -146,45 +166,32 @@ permalink: /guide000/
     </div>
     <!-- JavaScript 逻辑：判断对错与解锁下一关 -->
     <script>
-        // 🛠️ 在这里配置你的正确答案（支持大小写模糊匹配）
         const config = {
             q1: { answer: "00 2f 36 2e 3d 36 35 33 3a 2c", nextCol: "col-2" },
             q2: { answer: "EARTH", nextCol: "col-3" },
-            q3: { answer: "ENDZUSTAND", nextCol: null } // 最后一题，没有下一关
+            q3: { answer: "ENDZUSTAND", nextCol: null } 
         };
-        // 监听第一个输入框
         document.getElementById('input-1').addEventListener('input', function() {
             checkAnswer(this, config.q1.answer, config.q1.nextCol);
         });
-        // 监听第二个输入框
         document.getElementById('input-2').addEventListener('input', function() {
             checkAnswer(this, config.q2.answer, config.q2.nextCol);
         });
-        // 监听第三个输入框
         document.getElementById('input-3').addEventListener('input', function() {
-             // 检查第三题答案（确保 config.q3.answer 依然匹配你的标准答案）
             if (this.value.trim().toLowerCase() === config.q3.answer.toLowerCase()) {
-                // 1. 标记第三个输入框为正确（变绿）
                 this.classList.add('correct');        
-                // 2. 稍微延迟 0.8 秒（800毫秒），让用户看到输入框变绿的成功反馈，然后丝滑跳转
                 setTimeout(() => {
-                    // 使用绝对路径跳转到你的 endzustand 页面
                     window.location.href = '/endzustand/';
                 }, 800);     
             }
         });
-        // 通用的答案检查函数
         function checkAnswer(inputElement, correctAnswer, nextColumnId) {
-            // 获取用户输入并去除空格、转为小写（防止大小写导致判错）
             const userAnswer = inputElement.value.trim().toLowerCase();            
             if (userAnswer === correctAnswer.toLowerCase()) {
-                // 1. 标记当前输入框为正确
                 inputElement.classList.add('correct');                
-                // 2. 解锁下一个问题列
                 if (nextColumnId) {
                     const nextCol = document.getElementById(nextColumnId);
                     nextCol.classList.remove('locked');                    
-                    // 3. 自动让下一个输入框获得焦点，提升体验
                     setTimeout(() => {
                         nextCol.querySelector('.answer-input').focus();
                     }, 500);
