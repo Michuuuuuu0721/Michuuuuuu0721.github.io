@@ -83,8 +83,8 @@ permalink: /guide000/
         /* 💡 新增：暗色遮罩提示文本样式（黑幕效果） */
         /* ======================================================== */
         .hint-spoiler {
-            background-color: #222;       /* 默认覆盖一层深灰色块 */
-            color: #222;                  /* 文字颜色与色块相同，达到隐藏效果 */
+            background-color: #111;       /* 默认覆盖一层深灰色块 */
+            color: #111;                  /* 文字颜色与色块相同，达到隐藏效果 */
             padding: 2px 6px;             /* 给色块加一点内边距，看起来更像标签 */
             border-radius: 4px;           /* 微弱的圆角，更精致 */
             cursor: help;                 /* 鼠标悬停时指针变成问号，暗示可以交互 */
@@ -93,7 +93,7 @@ permalink: /guide000/
         }
         /* 鼠标悬停（Hover）或手指触摸时的样式 */
         .hint-spoiler:hover {
-            background-color: #333;       /* 底色轻微变亮 */
+            background-color: #222;       /* 底色轻微变亮 */
             color: white;                 /* 文字变白显现出来 */
             user-select: text;            /* 显现后允许正常选中文本 */
         }
