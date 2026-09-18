@@ -36,7 +36,7 @@ permalink: /entropy/
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 400px;
+            max-width: 800px;
         }
         /* 4. 随机问题文本样式 */
         .question-text {
@@ -47,6 +47,10 @@ permalink: /entropy/
             text-align: center;
             line-height: 1.6;
             min-height: 50px; /* 防止题目字数不同导致布局跳动 */
+            width: 100%;
+            max-width: 700px; 
+            box-sizing: border-box;
+            padding: 0 20px;
         }
         /* 5. 输入框通用样式（沿用之前的扁平清爽风格） */
         .answer-input {
