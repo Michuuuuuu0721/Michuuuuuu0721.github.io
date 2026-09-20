@@ -15,7 +15,7 @@ permalink: /gallery/
             background-color: black; font-family: sans-serif;
         }
         
-        /* 1. 马赛克瀑布流网格基础布局 */
+        /* 1. 马赛克网格基础布局 */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -36,65 +36,71 @@ permalink: /gallery/
         .gallery-item a { display: block; width: 100%; height: 100%; }
 
         /* ======================================================== */
-        /* 🎨 纯 CSS 降采样：双图层平滑淡出技术 (完美修复重叠问题) */
+        /* 🎨 降采样黑魔法：双图层精准定位与平滑淡出技术 */
         /* ======================================================== */
-        
-        /* 基础底层：两层图层全部继承容器大小 */
-        .img-layer {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%; object-fit: cover;
-            transform-origin: center center;
-            /* 💡 默认状态下：两层图片都处于你喜欢的 1.08 倍膨胀状态 */
-            transform: scale(1.08); 
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
-            will-change: transform, opacity;
-        }
 
-        /* 👑 图层 A (在上层)：渲染纯净、不重叠、无错位的 8×8 级硬边大像素方块 */
+        /* 👑 图层 A (在上层)：渲染纯净、不重叠、无错位的巨大硬边像素网格 */
         .pixelated-layer {
+            position: absolute;
             z-index: 2;
-            opacity: 0.8; /* 默认轻微暗淡，更符合黑暗美学 */
+            top: 0; left: 0;
+            opacity: 0.8; /* 默认轻微暗淡 */
             
-            /* 🛠️ 像素化核心核心：无视设备分辨率，锁死网格硬边 */
+            /* 强制浏览器使用最近邻硬边算法 */
             image-rendering: -moz-crisp-edges;
             image-rendering: -o-crisp-edges;
             image-rendering: -webkit-optimize-contrast;
             image-rendering: crisp-edges;
-            image-rendering: pixelated; /* */
+            image-rendering: pixelated;
 
-            /* 🛠️ 降采样黑魔法：
-               第一步：width/height 强行撑到 1000% (拉伸10倍) 
-               第二步：transform 缩小至 0.1倍 并叠加上原本的 1.08倍 = scale(0.108) 
-               这样会逼迫浏览器把 7.1MB 的图瞬间压缩成只有几个像素点的纯色网格！*/
+            /* 🛠️ 尺寸欺骗法：强行把画布拉大到 10 倍（1000%） */
             width: 1000% !important;
             height: 1000% !important;
-            transform: scale(0.108); 
+            object-fit: cover;
+            
+            /* 🛠️ 关键修复：将缩放的基准点死死锁在左上角，彻底防止大色块飞出格子 */
+            transform-origin: top left !important;
+            
+            /* 默认未悬停：缩小 10 倍回到格子大小，并额外叠加 1.08 倍的整体放大膨胀感 */
+            transform: scale(calc(0.1 * 1.08)); 
+            
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
+            will-change: transform, opacity;
         }
 
         /* 👑 图层 B (在下层)：静静隐藏，保留你珍贵的 7.1MB 原始极致超清无损细节 */
         .hd-layer {
+            position: absolute;
             z-index: 1;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
             opacity: 0; /* 默认隐藏，等待马赛克褪去 */
-            image-rendering: auto; /* 恢复高质量平滑渲染 */
+            image-rendering: auto; /* 恢复最高质量平滑渲染 */
+            
+            /* 🛠️ 高清层从正中心平滑收缩 */
+            transform-origin: center center;
+            transform: scale(1.08); /* 默认同样处于 1.08 倍膨胀状态 */
+            
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
+            will-change: transform, opacity;
         }
 
         /* ======================================================== */
         /* 🚀 鼠标悬停 (Hover) 的双层联动淡出收缩特效 */
         /* ======================================================== */
         
-        /* 1. 当鼠标移上去时：两层图片立刻完美同步向内收缩回 1.0 尺寸 */
-        .gallery-item:hover .img-layer {
-            transform: scale(1.0); 
-        }
-
-        /* 2. 核心：上层的巨型马赛克色块在 0.5 秒内慢慢变透明，丝滑淡出 */
+        /* 1. 当鼠标移上去时：两层图片立刻同步优雅收缩回 1.0 原尺寸 */
         .gallery-item:hover .pixelated-layer {
             opacity: 0; 
+            /* 移除膨胀感，回归 0.1 基础缩放 */
+            transform: scale(0.1); 
         }
 
-        /* 3. 核心：下层的 7.1MB 原始超清原画同步平滑淡入，完全浮现 */
         .gallery-item:hover .hd-layer {
             opacity: 1; 
+            /* 从 1.08 倍优雅收缩回 1.0 的原始大小 */
+            transform: scale(1.0); 
         }
 
         /* 覆盖在图片上的文本标题 */
@@ -109,18 +115,14 @@ permalink: /gallery/
 </head>
 <body>
 
-    <!-- 💡 注意：这里已经彻底删掉了所有复杂的 SVG 滤镜代码，干净纯粹！ -->
-
     <div class="gallery-grid">
         {% for painting in site.paintings %}
         <div class="gallery-item">
             <a href="{{ painting.url }}">
-                
-                <!-- 👑 图层 A：马赛克外套层（这里我们通过 CSS 的宽高和小缩放实现了无缝的大方块网格） -->
-                <img src="{{ painting.image_high }}" class="img-layer pixelated-layer" alt="{{ painting.title }}">
-                
-                <!-- 👑 图层 B：高清真身层（用户碰触时平滑淡入呈现） -->
-                <img src="{{ painting.image_high }}" class="img-layer hd-layer" alt="{{ painting.title }}" loading="lazy">
+                <!-- 图层 A：马赛克外套层 -->
+                <img src="{{ painting.image_high }}" class="pixelated-layer" alt="{{ painting.title }}">
+                <!-- 图层 B：高清真身层 -->
+                <img src="{{ painting.image_high }}" class="hd-layer" alt="{{ painting.title }}" loading="lazy">
                 
                 <div class="item-overlay">
                     <div class="item-title">{{ painting.title }}</div>
@@ -132,4 +134,3 @@ permalink: /gallery/
 
 </body>
 </html>
-
