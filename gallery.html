@@ -66,7 +66,7 @@ permalink: /gallery.html
         <div class="gallery-item">
             <a href="{{ painting.url }}">
                 <!-- 一开始加载高清图，但通过 CSS 将其强制高度模糊。悬停时变清晰，这样最省加载时间且效果极佳 -->
-                <img src="{{ painting.image_high }}" alt="{{ painting.title }}">
+                <img src="{{ painting.image_high }}" alt="{{ painting.title }}" loading="lazy" decoding="async">
                 <div class="item-overlay">
                     <div class="item-title">{{ painting.title }}</div>
                 </div>
