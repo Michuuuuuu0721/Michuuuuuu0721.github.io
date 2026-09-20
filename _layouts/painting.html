@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 动态读取独立 md 文件中填写的 title -->
+    <title>{{ page.title }}</title>
+    <style>
+        /* 统一的沉浸式黑底和字体样式 */
+        body {
+            margin: 0; 
+            background-color: black !important; 
+            color: white !important;
+            font-family: sans-serif; 
+            height: 100vh;
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        /* 大图容器 */
+        .art-container { 
+            max-width: 90%; 
+            max-height: 70vh; 
+            text-align: center; 
+        }
+        .art-container img { 
+            max-width: 100%; 
+            max-height: 70vh; 
+            object-fit: contain; 
+        }
+        /* 描述空间样式 */
+        .info-box { 
+            margin-top: 20px; 
+            text-align: center; 
+            max-width: 600px; 
+        }
+        .title { 
+            font-size: 20px; 
+            margin-bottom: 10px; 
+            letter-spacing: 1px; 
+        }
+        .desc { 
+            font-size: 14px; 
+            color: #888; 
+            line-height: 1.6; 
+        }
+        /* 额外描述属性（如日期、媒介）的独立样式 */
+        .meta-info {
+            font-size: 12px;
+            color: #555;
+            margin-top: 5px;
+        }
+        /* 返回画廊的按钮 */
+        .back-btn { 
+            margin-top: 30px; 
+            color: #444; 
+            text-decoration: none; 
+            font-size: 13px; 
+            transition: color 0.3s;
+        }
+        .back-btn:hover { 
+            color: white; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="art-container">
+        <!-- 动态读取高清图路径 -->
+        <img src="{{ page.image_high }}" alt="{{ page.title }}">
+    </div>
+    
+    <div class="info-box">
+        <div class="title">{{ page.title }}</div>
+        <div class="desc">{{ page.description }}</div>
+        
+        <!-- 💡 进阶：如果你以后想加日期或所用工具，只要 md 里面有写，这里就会自动显示 -->
+        {% if page.date_created or page.medium %}
+        <div class="meta-info">
+            {% if page.date_created %}{{ page.date_created }}{% endif %}
+            {% if page.date_created and page.medium %} • {% endif %}
+            {% if page.medium %}{{ page.medium }}{% endif %}
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- 内容锚点（如果以后想在 md 里写额外的正文或评论，会渲染在这里） -->
+    {{ content }}
+
+    <a href="/gallery.html" class="back-btn">← Back to Gallery</a>
+
+</body>
+</html>

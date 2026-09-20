@@ -65,6 +65,12 @@ collections:
     permalink: /projects/:path/
     layout: project
 
+collections:
+  paintings:
+    output: true
+    permalink: /gallery/:path/
+    layout: painting
+
 # Netease settings
 netease_comment: false
 

@@ -1,0 +1,79 @@
+---
+title: Gallery
+layout: null
+permalink: /gallery.html
+---
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery</title>
+    <style>
+        body {
+            margin: 0; padding: 40px 20px;
+            background-color: black; font-family: sans-serif;
+        }
+        /* 1. 核心：CSS Grid 实现错落有致的马赛克网格布局 */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-auto-rows: 200px; /* 基础网格行高 */
+            grid-gap: 20px;
+            max-width: 1200px; margin: 0 auto;
+        }
+        .gallery-item {
+            position: relative; overflow: hidden; border-radius: 4px;
+            background-color: #111;
+        }
+        
+        /* 🌟 利用循环给不同的格子赋予不同的高度跨度，产生完美的马赛克错落感 */
+        .gallery-item:nth-child(3n+1) { grid-row: span 2; } /* 有的高度占两格 */
+        .gallery-item:nth-child(4n+2) { grid-row: span 1.5; } 
+
+        .gallery-item a { display: block; width: 100%; height: 100%; }
+
+        /* 2. 核心：低清形式初始状态 */
+        .gallery-item img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: blur(15px); /* 一开始高度模糊，伪装成低清 */
+            transform: scale(1.05); /* 稍微放大防止边缘出现白边 */
+            transition: filter 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s;
+        }
+
+        /* 3. 核心：鼠标悬停时变清晰，且带有轻微放大动效 */
+        .gallery-item:hover img {
+            filter: blur(0px); /* 悬停时去除模糊，变得极其清晰 */
+            transform: scale(1.0);
+        }
+
+        /* 覆盖在图片上的标题和简述提示 */
+        .item-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            padding: 20px; background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            opacity: 0; transition: opacity 0.4s; pointer-events: none;
+        }
+        .gallery-item:hover .item-overlay { opacity: 1; }
+        .item-title { color: white; font-size: 14px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- 画廊大网格 -->
+    <div class="gallery-grid">
+        <!-- 💡 自动循环读取 _paintings 文件夹里的所有画作 -->
+        {% for painting in site.paintings %}
+        <div class="gallery-item">
+            <a href="{{ painting.url }}">
+                <!-- 一开始加载高清图，但通过 CSS 将其强制高度模糊。悬停时变清晰，这样最省加载时间且效果极佳 -->
+                <img src="{{ painting.image_high }}" alt="{{ painting.title }}">
+                <div class="item-overlay">
+                    <div class="item-title">{{ painting.title }}</div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
