@@ -36,31 +36,24 @@ permalink: /gallery/
         .gallery-item a { display: block; width: 100%; height: 100%; }
 
         /* ======================================================== */
-        /* 🎨 终极突破：背景图物理降采样与双图层平滑淡出技术 */
+        /* 🎨 终极全铺降采样：双图层精准锁定与平滑淡出技术 */
         /* ======================================================== */
         
         /* 共有层基础样式 */
         .img-layer {
             position: absolute;
             top: 0; left: 0;
-            width: 100%; height: 100%;
             background-position: center center !important;
             background-repeat: no-repeat !important;
-            
-            /* 💡 默认状态下：两层图片都处于你喜欢的 1.08 倍膨胀状态 */
-            transform: scale(1.08); 
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
+            background-size: cover !important;
             will-change: transform, opacity;
         }
 
-        /* 👑 图层 A (在上层)：渲染纯净、四四方方的规整马赛克大色块网格 */
+        /* 👑 图层 A (在上层)：渲染纯净、四四方方、完美铺满的巨型马赛克大色块网格 */
         .pixelated-layer {
             z-index: 2;
-            opacity: 0.8; /* 默认轻微暗淡，更具神秘感 */
+            opacity: 0.8; /* 默认轻微暗淡，更有神秘感 */
             
-            /* 🛠️ 核心：无视图片原本几千万像素，直接用物理尺寸强行覆盖填充 */
-            background-size: cover !important; 
-
             /* 🛠️ 像素化核心：最近邻硬边算法（对显卡零压力） */
             image-rendering: -moz-crisp-edges;
             image-rendering: -o-crisp-edges;
@@ -68,36 +61,48 @@ permalink: /gallery/
             image-rendering: crisp-edges;
             image-rendering: pixelated; 
 
-            /* 💡 降采样黑魔法：故意只读取极低的分辨率作为平铺基准（宽度 16 像素，高度 12 像素）。
-               这会逼迫浏览器把你的大图就地蹂碎、强制混合成数量极少、四四方方、完美对其的硬边网格大方块！ */
-            background-size: 16px 12px !important; 
+            /* 💡 降采样平铺黑魔法：
+               1. 强行把这个图层的实体物理大小拉伸 12 倍 (1200%)，这样原图在里面会被浏览器硬重构。
+               2. 通过 transform-origin 死死咬住左上角。
+               3. 默认未悬停状态下，将 12 倍大小的图层反向缩小 12 倍（即 1/12 ≈ 0.0833），
+                  并叠加上你原本最爱的 1.08 倍整体膨胀状态 = scale(calc(0.08333 * 1.08))。
+               这样操作后，画面会被强制揉碎成极其完美的、四四方方铺满格子的 8×8 级硬边大像素！ */
+            width: 1200% !important;
+            height: 1200% !important;
+            transform-origin: top left !important;
+            transform: scale(0.09); /* 0.08333 * 1.08 = 0.09 完美适配平满 */
+            
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
         }
 
         /* 👑 图层 B (在下层)：静静隐藏，完美保留你 7.1MB 原始极致超清无损细节 */
         .hd-layer {
             z-index: 1;
+            width: 100%; height: 100%;
             opacity: 0; /* 默认隐藏，等待马赛克褪去 */
-            background-size: cover !important; /* 恢复原比例高清填充 */
             image-rendering: auto; /* 恢复最高质量平滑渲染 */
+            
+            /* 高清层从正中心平滑收缩 */
+            transform-origin: center center !important;
+            transform: scale(1.08); /* 默认同样处于 1.08 倍膨胀状态 */
+            
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
         }
 
         /* ======================================================== */
         /* 🚀 鼠标悬停 (Hover) 的双层联动淡出收缩特效 */
         /* ======================================================== */
         
-        /* 1. 当鼠标移上去时：两层图片立刻同步向内优雅收缩回 1.0 尺寸，形成拉远视角的聚焦感 */
-        .gallery-item:hover .img-layer {
-            transform: scale(1.0); 
-        }
-
-        /* 2. 核心：上层的巨型马赛克色块在 0.5 秒内慢慢变透明，丝滑淡出融化 */
+        /* 1. 当鼠标移上去时：上层马赛克淡出，并卸下 1.08 倍的膨胀，回归纯粹的 1/12 基础比例 */
         .gallery-item:hover .pixelated-layer {
             opacity: 0; 
+            transform: scale(0.08333); /* 1/12 的精确基准值，确保消散时位置绝不闪烁错位 */
         }
 
-        /* 3. 核心：下层的 7.1MB 原始超清原画同步平滑淡入，完全浮现 */
+        /* 2. 当鼠标移上去时：下层高清真身完美同步淡入，并从 1.08 倍优雅收缩回 1.0 原尺寸 */
         .gallery-item:hover .hd-layer {
             opacity: 1; 
+            transform: scale(1.0); 
         }
 
         /* 覆盖在图片上的文本标题 */
@@ -113,14 +118,15 @@ permalink: /gallery/
 <body>
 
     <div class="gallery-grid">
+        <!-- 💡 自动循环读取 _paintings 文件夹里的所有画作 -->
         {% for painting in site.paintings %}
         <div class="gallery-item">
             <a href="{{ painting.url }}">
                 
-                <!-- 👑 图层 A：马赛克外套层（利用背景缩放图技术，强行捏碎画面） -->
+                <!-- 👑 图层 A：马赛克外套层（利用大物理尺寸和左上角咬合，实现铺满的巨型复古色块） -->
                 <div class="img-layer pixelated-layer" style="background-image: url('{{ painting.image_high }}');"></div>
                 
-                <!-- 👑 图层 B：高清真身层（用户碰触时平滑淡入呈现） -->
+                <!-- 👑 图层 B：高清真身层（用户碰触时自正中心平滑淡入并收缩呈现） -->
                 <div class="img-layer hd-layer" style="background-image: url('{{ painting.image_high }}');"></div>
                 
                 <div class="item-overlay">
