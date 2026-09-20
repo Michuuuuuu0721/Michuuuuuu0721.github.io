@@ -78,7 +78,20 @@ permalink: /gallery/
     </style>
 </head>
 <body>
-    id="huge-pixelate-filter"
+    <svg xmlns="http://w3.org" style="display: none;">
+        <defs>
+            <filter id="huge-pixelate-filter" x="0%" y="0%" width="100%" height="100%">
+                <!-- 1. 将图片像素离散化（物理块化） -->
+                <feComponentTransfer>
+                    <feFuncR type="discrete" tableValues="0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1" />
+                    <feFuncG type="discrete" tableValues="0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1" />
+                    <feFuncB type="discrete" tableValues="0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1" />
+                </feComponentTransfer>
+                <!-- 2. 强力腐蚀边缘，强制形成巨大、粗犷的颗粒感 -->
+                <feMorphology operator="dilate" radius="8" />
+            </filter>
+        </defs>
+    </svg>
     <!-- 画廊大网格 -->
     <div class="gallery-grid">
         <!-- 💡 自动循环读取 _paintings 文件夹里的所有画作 -->
@@ -94,6 +107,5 @@ permalink: /gallery/
         </div>
         {% endfor %}
     </div>
-
 </body>
 </html>
