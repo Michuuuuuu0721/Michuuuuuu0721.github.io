@@ -15,7 +15,7 @@ permalink: /gallery/
             background-color: black; font-family: sans-serif;
         }
         
-        /* 1. 马赛克网格基础布局 */
+        /* 1. 马赛克瀑布流网格基础布局 */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -36,71 +36,68 @@ permalink: /gallery/
         .gallery-item a { display: block; width: 100%; height: 100%; }
 
         /* ======================================================== */
-        /* 🎨 降采样黑魔法：双图层精准定位与平滑淡出技术 */
+        /* 🎨 终极突破：背景图物理降采样与双图层平滑淡出技术 */
         /* ======================================================== */
-
-        /* 👑 图层 A (在上层)：渲染纯净、不重叠、无错位的巨大硬边像素网格 */
-        .pixelated-layer {
+        
+        /* 共有层基础样式 */
+        .img-layer {
             position: absolute;
-            z-index: 2;
             top: 0; left: 0;
-            opacity: 0.8; /* 默认轻微暗淡 */
+            width: 100%; height: 100%;
+            background-position: center center !important;
+            background-repeat: no-repeat !important;
             
-            /* 强制浏览器使用最近邻硬边算法 */
-            image-rendering: -moz-crisp-edges;
-            image-rendering: -o-crisp-edges;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-            image-rendering: pixelated;
-
-            /* 🛠️ 尺寸欺骗法：强行把画布拉大到 10 倍（1000%） */
-            width: 1000% !important;
-            height: 1000% !important;
-            object-fit: cover;
-            
-            /* 🛠️ 关键修复：将缩放的基准点死死锁在左上角，彻底防止大色块飞出格子 */
-            transform-origin: top left !important;
-            
-            /* 默认未悬停：缩小 10 倍回到格子大小，并额外叠加 1.08 倍的整体放大膨胀感 */
-            transform: scale(calc(0.1 * 1.08)); 
-            
+            /* 💡 默认状态下：两层图片都处于你喜欢的 1.08 倍膨胀状态 */
+            transform: scale(1.08); 
             transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
             will-change: transform, opacity;
         }
 
-        /* 👑 图层 B (在下层)：静静隐藏，保留你珍贵的 7.1MB 原始极致超清无损细节 */
+        /* 👑 图层 A (在上层)：渲染纯净、四四方方的规整马赛克大色块网格 */
+        .pixelated-layer {
+            z-index: 2;
+            opacity: 0.8; /* 默认轻微暗淡，更具神秘感 */
+            
+            /* 🛠️ 核心：无视图片原本几千万像素，直接用物理尺寸强行覆盖填充 */
+            background-size: cover !important; 
+
+            /* 🛠️ 像素化核心：最近邻硬边算法（对显卡零压力） */
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -o-crisp-edges;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated; 
+
+            /* 💡 降采样黑魔法：故意只读取极低的分辨率作为平铺基准（宽度 16 像素，高度 12 像素）。
+               这会逼迫浏览器把你的大图就地蹂碎、强制混合成数量极少、四四方方、完美对其的硬边网格大方块！ */
+            background-size: 16px 12px !important; 
+        }
+
+        /* 👑 图层 B (在下层)：静静隐藏，完美保留你 7.1MB 原始极致超清无损细节 */
         .hd-layer {
-            position: absolute;
             z-index: 1;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover;
             opacity: 0; /* 默认隐藏，等待马赛克褪去 */
+            background-size: cover !important; /* 恢复原比例高清填充 */
             image-rendering: auto; /* 恢复最高质量平滑渲染 */
-            
-            /* 🛠️ 高清层从正中心平滑收缩 */
-            transform-origin: center center;
-            transform: scale(1.08); /* 默认同样处于 1.08 倍膨胀状态 */
-            
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
-            will-change: transform, opacity;
         }
 
         /* ======================================================== */
         /* 🚀 鼠标悬停 (Hover) 的双层联动淡出收缩特效 */
         /* ======================================================== */
         
-        /* 1. 当鼠标移上去时：两层图片立刻同步优雅收缩回 1.0 原尺寸 */
-        .gallery-item:hover .pixelated-layer {
-            opacity: 0; 
-            /* 移除膨胀感，回归 0.1 基础缩放 */
-            transform: scale(0.1); 
+        /* 1. 当鼠标移上去时：两层图片立刻同步向内优雅收缩回 1.0 尺寸，形成拉远视角的聚焦感 */
+        .gallery-item:hover .img-layer {
+            transform: scale(1.0); 
         }
 
+        /* 2. 核心：上层的巨型马赛克色块在 0.5 秒内慢慢变透明，丝滑淡出融化 */
+        .gallery-item:hover .pixelated-layer {
+            opacity: 0; 
+        }
+
+        /* 3. 核心：下层的 7.1MB 原始超清原画同步平滑淡入，完全浮现 */
         .gallery-item:hover .hd-layer {
             opacity: 1; 
-            /* 从 1.08 倍优雅收缩回 1.0 的原始大小 */
-            transform: scale(1.0); 
         }
 
         /* 覆盖在图片上的文本标题 */
@@ -119,10 +116,12 @@ permalink: /gallery/
         {% for painting in site.paintings %}
         <div class="gallery-item">
             <a href="{{ painting.url }}">
-                <!-- 图层 A：马赛克外套层 -->
-                <img src="{{ painting.image_high }}" class="pixelated-layer" alt="{{ painting.title }}">
-                <!-- 图层 B：高清真身层 -->
-                <img src="{{ painting.image_high }}" class="hd-layer" alt="{{ painting.title }}" loading="lazy">
+                
+                <!-- 👑 图层 A：马赛克外套层（利用背景缩放图技术，强行捏碎画面） -->
+                <div class="img-layer pixelated-layer" style="background-image: url('{{ painting.image_high }}');"></div>
+                
+                <!-- 👑 图层 B：高清真身层（用户碰触时平滑淡入呈现） -->
+                <div class="img-layer hd-layer" style="background-image: url('{{ painting.image_high }}');"></div>
                 
                 <div class="item-overlay">
                     <div class="item-title">{{ painting.title }}</div>
