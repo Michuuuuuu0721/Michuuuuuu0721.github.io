@@ -14,51 +14,57 @@ permalink: /gallery/
             margin: 0; padding: 40px 20px;
             background-color: black; font-family: sans-serif;
         }
-        /* 1. 核心：CSS Grid 实现错落有致的马赛克网格布局 */
+
+        /* 1. 马赛克瀑布流大网格 */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            grid-auto-rows: 200px; /* 基础网格行高 */
+            grid-auto-rows: 200px;
             grid-gap: 20px;
             max-width: 1200px; margin: 0 auto;
         }
+
         .gallery-item {
-            position: relative; overflow: hidden; border-radius: 4px;
+           position: relative; overflow: hidden; border-radius: 4px;
             background-color: #111;
         }
-        
-        /* 🌟 利用循环给不同的格子赋予不同的高度跨度，产生完美的马赛克错落感 */
-        .gallery-item:nth-child(3n+1) { grid-row: span 2; } /* 有的高度占两格 */
+
+        /* 让不同的格子拥有不同的高度跨度 */
+        .gallery-item:nth-child(3n+1) { grid-row: span 2; }
         .gallery-item:nth-child(4n+2) { grid-row: span 1.5; } 
 
         .gallery-item a { display: block; width: 100%; height: 100%; }
-
-        /* 2. 核心：低清形式初始状态 */
+          
+        /* ======================================================== */
+        /* 🎨 像素化核心：主画廊图片的初始状态（超大颗粒马赛克 + 默认放大） */
+        /* ======================================================== */
         .gallery-item img {
-            width: 100%; height: 100%; object-fit: cover;
-            image-rendering: -moz-crisp-edges;
-            image-rendering: -o-crisp-edges;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-            image-rendering: pixelated; /* 现代浏览器标准 */
-            /* 💡 如果大图在网页里直接设置 pixelated 块不够大，可以启用下面这两行“大颗粒马赛克补丁” */
-            /* transform: scale(0.1); */ /* 故意缩小10倍 */
-            /* width: 1000%; height: 1000%; */ /* 强行放大10倍，从而产生极具艺术感的巨大像素颗粒 */
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover;
             opacity: 0.75; /* 默认轻微暗淡 */
-            transform-origin: center center;  
-            /* 🛠️ 核心修改：让图片在默认未悬停时，就处于 1.08 倍的放大膨胀状态 */
-            transform: scale(1.08); 
-            /* 动画过渡：让缩放和透明度在 0.45 秒内平滑过渡 */
-            transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.45s ease;
-            /* 终极防卡补丁：激活硬件加速，对付几兆的原始大图，消除收缩时的卡顿 */
-            will-change: transform, opacity; 
-        }
 
-        /* 3. 核心：鼠标悬停时变清晰，且带有轻微放大动效 */
+            /* 🛠️ 关键注入：调用网页下方我们自定义的 SVG 巨大马赛克滤镜 */
+            filter: url(#huge-pixelate-filter); 
+
+            transform-origin: center center; 
+            /* 默认膨胀放大 1.08 倍 */
+            transform: scale(1.08); 
+
+            /* 平滑收缩和亮度过渡 */
+            transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.45s ease;
+            will-change: transform, opacity; 
+       }
+
+        /* ======================================================== */
+        /* 🎨 鼠标悬停（Hover）：完美显现 —— 【注销马赛克】 + 【向内收缩】 */
+        /* ======================================================== */
         .gallery-item:hover img {
-            image-rendering: auto; 
+            /* 🛠️ 核心：移开滤镜，瞬间将 7.1MB 的无损细节完完整整释放出来 */
+            filter: none !important; 
+
             opacity: 1;
-            transform: scale(1.0); /* 悬停时恢复原始大小 */
+            transform: scale(1.0); /* 优雅缩小回原位 */
         }
 
         /* 覆盖在图片上的标题和简述提示 */
@@ -72,7 +78,7 @@ permalink: /gallery/
     </style>
 </head>
 <body>
-
+    id="huge-pixelate-filter"
     <!-- 画廊大网格 -->
     <div class="gallery-grid">
         <!-- 💡 自动循环读取 _paintings 文件夹里的所有画作 -->
