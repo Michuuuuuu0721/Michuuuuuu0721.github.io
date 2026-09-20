@@ -36,15 +36,29 @@ permalink: /gallery/
         /* 2. 核心：低清形式初始状态 */
         .gallery-item img {
             width: 100%; height: 100%; object-fit: cover;
-            filter: blur(15px); /* 一开始高度模糊，伪装成低清 */
-            transform: scale(1.05); /* 稍微放大防止边缘出现白边 */
-            transition: filter 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -o-crisp-edges;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated; /* 现代浏览器标准 */
+            /* 💡 如果大图在网页里直接设置 pixelated 块不够大，可以启用下面这两行“大颗粒马赛克补丁” */
+            /* transform: scale(0.1); */ /* 故意缩小10倍 */
+            /* width: 1000%; height: 1000%; */ /* 强行放大10倍，从而产生极具艺术感的巨大像素颗粒 */
+            opacity: 0.75; /* 默认轻微暗淡 */
+            transform-origin: center center;  
+            /* 🛠️ 核心修改：让图片在默认未悬停时，就处于 1.08 倍的放大膨胀状态 */
+            transform: scale(1.08); 
+            /* 动画过渡：让缩放和透明度在 0.45 秒内平滑过渡 */
+            transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.45s ease;
+            /* 终极防卡补丁：激活硬件加速，对付几兆的原始大图，消除收缩时的卡顿 */
+            will-change: transform, opacity; 
         }
 
         /* 3. 核心：鼠标悬停时变清晰，且带有轻微放大动效 */
         .gallery-item:hover img {
-            filter: blur(0px); /* 悬停时去除模糊，变得极其清晰 */
-            transform: scale(1.0);
+            image-rendering: auto; 
+            opacity: 1;
+            transform: scale(1.0); /* 悬停时恢复原始大小 */
         }
 
         /* 覆盖在图片上的标题和简述提示 */
