@@ -14,8 +14,8 @@ permalink: /gallery/
             margin: 0; padding: 40px 20px;
             background-color: black; font-family: sans-serif;
         }
-
-        /* 1. 马赛克瀑布流大网格 */
+        
+        /* 1. 马赛克网格基础布局 */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -23,53 +23,74 @@ permalink: /gallery/
             grid-gap: 20px;
             max-width: 1200px; margin: 0 auto;
         }
-
+        
+        /* 2. 核心容器：设置为马赛克错落排列 */
         .gallery-item {
-           position: relative; overflow: hidden; border-radius: 4px;
+            position: relative; overflow: hidden; border-radius: 4px;
             background-color: #111;
         }
-
-        /* 让不同的格子拥有不同的高度跨度 */
         .gallery-item:nth-child(3n+1) { grid-row: span 2; }
         .gallery-item:nth-child(4n+2) { grid-row: span 1.5; } 
-
         .gallery-item a { display: block; width: 100%; height: 100%; }
-          
-        /* ======================================================== */
-        /* 🎨 像素化核心：主画廊图片的初始状态（超大颗粒马赛克 + 默认放大） */
-        /* ======================================================== */
-        .gallery-item img {
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover;
-            opacity: 0.75; /* 默认轻微暗淡 */
 
-            /* 🛠️ 关键注入：调用网页下方我们自定义的 SVG 巨大马赛克滤镜 */
-            filter: url(#huge-pixelate-filter); 
-
-            transform-origin: center center; 
-            /* 默认膨胀放大 1.08 倍 */
+        /* ======================================================== */
+        /* 🎨 终极魔改：利用双图层叠法 (Layer Stack) 实现淡出动效 */
+        /* ======================================================== */
+        
+        /* 两个图层的共同底层基础样式 */
+        .img-layer {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; object-fit: cover;
+            transform-origin: center center;
+            /* 💡 默认未悬停时：两层图片都处于你喜欢的 1.08 倍膨胀状态 */
             transform: scale(1.08); 
-
-            /* 平滑收缩和亮度过渡 */
-            transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.45s ease;
-            will-change: transform, opacity; 
-       }
-
-        /* ======================================================== */
-        /* 🎨 鼠标悬停（Hover）：完美显现 —— 【注销马赛克】 + 【向内收缩】 */
-        /* ======================================================== */
-        .gallery-item:hover img {
-            /* 🛠️ 核心：移开滤镜，瞬间将 7.1MB 的无损细节完完整整释放出来 */
-            filter: none !important; 
-
-            opacity: 1;
-            transform: scale(1.0); /* 优雅缩小回原位 */
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
+            will-change: transform, opacity;
         }
 
-        /* 覆盖在图片上的标题和简述提示 */
+        /* 👑 图层 A (在上层)：负责展示 8×8 巨大马赛克颗粒 */
+        .pixelated-layer {
+            z-index: 2;
+            opacity: 0.75; /* 默认轻微暗淡 */
+            
+            /* 🛠️ 降采样核心：通过强制硬件缩放算法，无视原图多大，强行在网页表面炸出 8×8 级的大色块 */
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -o-crisp-edges;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+
+            /* 💡 关键欺骗法：故意把图层缩至极小再放大，颗粒度瞬间变大，radius 负责硬边控制 */
+            filter: contrast(1.1) brightness(0.9) url(#pixel-block-filter); 
+        }
+
+        /* 👑 图层 B (在下层)：负责安分守己地藏在后面，展示原本 7.1MB 的终极超清无损细节 */
+        .hd-layer {
+            z-index: 1;
+            opacity: 0; /* 默认隐藏，不干扰马赛克的视觉 */
+            image-rendering: auto; /* 保证最高质量渲染 */
+        }
+
+        /* ======================================================== */
+        /* 🚀 鼠标悬停 (Hover) 的双层联动淡出特效 */
+        /* ======================================================== */
+        
+        /* 当鼠标移上去时： */
+        .gallery-item:hover .img-layer {
+            transform: scale(1.0); /* 🛠️ 两层图片完美同步优雅收缩回 1.0 原大小 */
+        }
+
+        .gallery-item:hover .pixelated-layer {
+            opacity: 0; /* 🛠️ 核心：上层的马赛克图层在 0.5 秒内丝滑地“淡出消散” */
+        }
+
+        .gallery-item:hover .hd-layer {
+            opacity: 1; /* 🛠️ 核心：下层的 7.1MB 超清原图同步丝滑“淡入显现” */
+        }
+
+        /* 覆盖在图片上的文本提示 */
         .item-overlay {
-            position: absolute; bottom: 0; left: 0; right: 0;
+            position: absolute; bottom: 0; left: 0; right: 0; z-index: 3;
             padding: 20px; background: linear-gradient(transparent, rgba(0,0,0,0.8));
             opacity: 0; transition: opacity 0.4s; pointer-events: none;
         }
@@ -78,28 +99,35 @@ permalink: /gallery/
     </style>
 </head>
 <body>
-    <svg xmlns="http://w3.org" style="display: none;">
-        <defs>
-            <filter id="huge-pixelate-filter" x="0%" y="0%" width="100%" height="100%">
-                <!-- 1. 将图片像素离散化（物理块化） -->
-                <feComponentTransfer>
-                    <feFuncR type="discrete" tableValues="0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1" />
-                    <feFuncG type="discrete" tableValues="0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1" />
-                    <feFuncB type="discrete" tableValues="0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1" />
-                </feComponentTransfer>
-                <!-- 2. 强力腐蚀边缘，强制形成巨大、粗犷的颗粒感 -->
-                <feMorphology operator="dilate" radius="8" />
-            </filter>
-        </defs>
+
+    <!-- 🧱 隐形的 SVG 像素网格格式化芯片（调整 tableValues 的分段可以控制色块纯度） -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+      <defs>
+        <filter id="pixel-block-filter">
+          <feComponentTransfer>
+            <feFuncR type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
+            <feFuncG type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
+            <feFuncB type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
+          </feComponentTransfer>
+          <!-- radius="18" 是精髓！数值越大，马赛克方块的物理面积就越大。18 刚好将高清大图锁死为极少的巨型方块 -->
+          <feMorphology operator="dilate" radius="18" />
+        </filter>
+      </defs>
     </svg>
-    <!-- 画廊大网格 -->
+
+    <!-- 画廊大网格循环 -->
     <div class="gallery-grid">
-        <!-- 💡 自动循环读取 _paintings 文件夹里的所有画作 -->
         {% for painting in site.paintings %}
         <div class="gallery-item">
             <a href="{{ painting.url }}">
-                <!-- 一开始加载高清图，但通过 CSS 将其强制高度模糊。悬停时变清晰，这样最省加载时间且效果极佳 -->
-                <img src="{{ painting.image_high }}" alt="{{ painting.title }}" loading="lazy" decoding="async">
+                
+                <!-- 💡 核心实现：用两份相同的图片链接分别充当“马赛克外套”和“超清肉身” -->
+                <!-- 图层 A：马赛克层 -->
+                <img src="{{ painting.image_high }}" class="img-layer pixelated-layer" alt="{{ painting.title }}">
+                
+                <!-- 图层 B：高清层 -->
+                <img src="{{ painting.image_high }}" class="img-layer hd-layer" alt="{{ painting.title }}" loading="lazy">
+                
                 <div class="item-overlay">
                     <div class="item-title">{{ painting.title }}</div>
                 </div>
@@ -107,5 +135,6 @@ permalink: /gallery/
         </div>
         {% endfor %}
     </div>
+
 </body>
 </html>
