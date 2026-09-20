@@ -64,8 +64,6 @@ collections:
     output: true
     permalink: /projects/:path/
     layout: project
-
-collections:
   paintings:
     output: true
     permalink: /gallery/:path/
