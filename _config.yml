@@ -97,5 +97,14 @@ service-worker: true
 page-mathjax: false
 
 # Friends
-friends:
-  ["紫狐", "Invidia"]
+# Friends
+friends: [
+    {
+        title: "紫狐の小窝",
+        href: "https://io-oi.ink/"
+    },
+    {
+        title: "Invidia's Wiki Page",
+        href: "https://wiki.pigeon-games.com/index.php?title=%E7%94%A8%E6%88%B7:Invidia"
+    }
+]
