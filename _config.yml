@@ -98,5 +98,4 @@ page-mathjax: false
 
 # Friends
 friends:
-  - ["紫狐", "https://io-oi.ink/", "Zihu's Hideout"]
-  - ["Invidia", "https://wiki.pigeon-games.com/index.php?title=%E7%94%A8%E6%88%B7:Invidia", "Invidia's Wiki Page"]
+  ["紫狐", "Invidia"]
