@@ -1,6 +1,6 @@
 // public/js/render/app/pixi.js — load PIXI and pixi-spine once (one module-level promise).
 
-const VENDOR = { pixi: '/vendor/pixi.min.js', spine: '/vendor/pixi-spine.js' };
+const VENDOR = { pixi: 'vendor/pixi.min.js', spine: 'vendor/pixi-spine.js' };
 
 let pixiPromise = null;
 

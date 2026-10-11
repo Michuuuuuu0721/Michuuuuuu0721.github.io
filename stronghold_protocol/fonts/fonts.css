@@ -9,8 +9,8 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/bender-regular.woff2') format('woff2'),
-       url('/fonts/bender-regular.otf') format('opentype');
+  src: url('fonts/bender-regular.woff2') format('woff2'),
+       url('fonts/bender-regular.otf') format('opentype');
 }
 
 @font-face {
@@ -18,8 +18,8 @@
   font-style: normal;
   font-weight: 300;
   font-display: swap;
-  src: url('/fonts/bender-light.woff2') format('woff2'),
-       url('/fonts/bender-light.ttf') format('truetype');
+  src: url('fonts/bender-light.woff2') format('woff2'),
+       url('fonts/bender-light.ttf') format('truetype');
 }
 
 @font-face {
@@ -27,6 +27,6 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/novecento-wide-normal.woff2') format('woff2'),
-       url('/fonts/novecento-wide-normal.otf') format('opentype');
+  src: url('fonts/novecento-wide-normal.woff2') format('woff2'),
+       url('fonts/novecento-wide-normal.otf') format('opentype');
 }

@@ -4,17 +4,17 @@
  "cell": 256,
  "source": {
   "D": {
-   "path": "/assets/local/map/autochess/TX_autochessi_D.png",
+   "path": "assets/local/map/autochess/TX_autochessi_D.png",
    "w": 2048,
    "h": 2048
   },
   "common": {
-   "path": "/assets/local/map/autochess/TX_autochessi_common_D.png",
+   "path": "assets/local/map/autochess/TX_autochessi_common_D.png",
    "w": 1024,
    "h": 1024
   },
   "BG": {
-   "path": "/assets/local/map/autochess/TX_autochessi_BG.png",
+   "path": "assets/local/map/autochess/TX_autochessi_BG.png",
    "w": 1024,
    "h": 1024
   }
