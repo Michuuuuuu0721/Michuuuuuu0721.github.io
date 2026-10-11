@@ -4,7 +4,6 @@ date: 2026-10-11
 layout: null
 permalink: /stronghold-protocol/
 ---
-<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
