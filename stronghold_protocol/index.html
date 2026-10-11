@@ -13,8 +13,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="卫戍协议" />
-  <meta name="description" content="卫戍协议：盟约 · 网页联机复刻（非官方同人作品）" />
-  <title>卫戍协议：盟约 · STRONGHOLD PROTOCOL</title>
+  <meta name="description" content="卫戍协议：盟约  网页联机复刻（非官方同人作品）" />
+  <title>卫戍协议：盟约  单机离线版</title>
+  
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icons/favicon.ico" sizes="16x16 32x32 48x48" />
   <link rel="icon" href="icons/favicon-16.png" type="image/png" sizes="16x16" />
@@ -23,10 +24,10 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" sizes="180x180" />
 
   <!-- Web fonts: never render-blocking (LAN/offline play must still start); system fallbacks in theme.css. -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://googleapis.com" />
+  <link rel="preconnect" href="https://gstatic.com" crossorigin />
   <link rel="stylesheet" media="print" onload="this.media='all'"
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Oxanium:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" />
+        href="https://googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Oxanium:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" />
   <!-- Self-hosted Bender / Novecento (provided by the assets pipeline). -->
   <link rel="stylesheet" href="fonts/fonts.css" />
 
@@ -47,85 +48,85 @@
   <link rel="stylesheet" href="css/emotes.css" />
   <link rel="stylesheet" href="css/devices.css" />
 
+  <!-- 💡 核心修复：显式映射映射厂商库和 shared 静态数据文件夹，阻止其漂移到全局根目录 -->
   <script type="importmap">
-    { "imports": { "preact": "vendor/preact.module.js", "preact/hooks": "vendor/hooks.module.js", "htm": "vendor/htm.module.js" } }
+    { 
+      "imports": { 
+        "preact": "./vendor/preact.module.js", 
+        "preact/hooks": "./vendor/hooks.module.js", 
+        "htm": "./vendor/htm.module.js",
+        "shared/": "./shared/"
+      } 
+    }
   </script>
+  
   <link rel="modulepreload" href="vendor/preact.module.js" />
   <link rel="modulepreload" href="vendor/hooks.module.js" />
   <link rel="modulepreload" href="vendor/htm.module.js" />
   <link rel="modulepreload" href="js/main.js" />
-  <!-- Battlefield renderer libs (classic scripts, injected by js/render/app.js when a match view mounts): warm the cache
-       at low priority so entering the match doesn't wait on ~800 KB of script. -->
+  
+  <!-- Battlefield renderer libs -->
   <link rel="prefetch" href="vendor/pixi.min.js" as="script" />
   <link rel="prefetch" href="vendor/pixi-spine.js" as="script" />
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>卫戍协议：盟约 · 单机离线版</title>
 
-    <!-- 💡 核心拦截芯片开始 -->
-    <script>
-        console.log("【守护者协议】静态沙盒虚拟服务器已在线启动。");
+  <!-- 💡 核心拦截芯片（已清洗 HTML 嵌套污染） -->
+  <script>
+      console.log("【守护者协议】静态沙盒虚拟服务器已在线启动。");
 
-        // 1. 强行重写浏览器的原生 WebSocket，假装连接成功
-        window.WebSocket = function(url) {
-            console.log("拦截到游戏联机握手请求:", url);
-            
-            const mockSocket = {
-                readyState: 1, // 1 代表 OPEN（连接已建立）
-                send: function(messageData) {
-                    const msg = JSON.parse(messageData);
-                    console.log("【前端发来指令】", msg.type, msg);
-                    
-                    // 2. 本地虚拟响应逻辑状态机
-                    // 当游戏前端发送特定请求时，我们在这里用 JS 假装后端进行回复
-                    if (msg.type === 'MATCH_JOIN' || msg.type === 'ROOM_CREATE') {
-                        // 假装建房成功，返回假房间信息
-                        setTimeout(() => {
-                            mockSocket.onmessage({
-                                data: JSON.stringify({
-                                    type: 'ROOM_UPDATE',
-                                    room: { id: "MOCK", host: "You", players: [{ name: "You", ready: true }], status: 'waiting' }
-                                })
-                            });
-                        }, 200);
-                    }
-                    
-                    if (msg.type === 'READY_TOGGLE') {
-                        // 用户点了准备，我们本地立刻倒计时直接开局
-                        setTimeout(() => {
-                            mockSocket.onmessage({
-                                data: JSON.stringify({
-                                    type: 'MATCH_START',
-                                    round: 1,
-                                    shop: { slots: [] }, // 本地生成初始商店干员数据
-                                    player: { gold: 6, exp: 0, level: 1, hp: 100 }
-                                })
-                            });
-                        }, 500);
-                    }
-                    
-                    // 后续所有的招募、刷新（R）、冻结（F），都会在这里拦截并计算
-                },
-                onopen: function() {},
-                onmessage: function() {},
-                onclose: function() {},
-                onerror: function() {}
-            };
-            
-            // 异步触发前端的连接成功回调
-            setTimeout(() => { if(mockSocket.onopen) mockSocket.onopen(); }, 50);
-            return mockSocket;
-        };
+      // 1. 强行重写浏览器的原生 WebSocket，假装连接成功
+      window.WebSocket = function(url) {
+          console.log("拦截到游戏联机握手请求:", url);
+          
+          const mockSocket = {
+              readyState: 1, // 1 代表 OPEN
+              send: function(messageData) {
+                  const msg = JSON.parse(messageData);
+                  console.log("【前端发来指令】", msg.type, msg);
+                  
+                  // 2. 本地虚拟响应逻辑状态机
+                  if (msg.type === 'MATCH_JOIN' || msg.type === 'ROOM_CREATE') {
+                      setTimeout(() => {
+                          mockSocket.onmessage({
+                              data: JSON.stringify({
+                                  type: 'ROOM_UPDATE',
+                                  room: { id: "MOCK", host: "You", players: [{ name: "You", ready: true }], status: 'waiting' }
+                              })
+                          });
+                      }, 200);
+                  }
+                  
+                  if (msg.type === 'READY_TOGGLE') {
+                      setTimeout(() => {
+                          mockSocket.onmessage({
+                              data: JSON.stringify({
+                                  type: 'MATCH_START',
+                                  round: 1,
+                                  shop: { slots: [] }, 
+                                  player: { gold: 6, exp: 0, level: 1, hp: 100 }
+                              })
+                          });
+                      }, 500);
+                  }
+              },
+              onopen: function() {},
+              onmessage: function() {},
+              onclose: function() {},
+              onerror: function() {}
+          };
+          
+          setTimeout(() => { if(mockSocket.onopen) mockSocket.onopen(); }, 50);
+          return mockSocket;
+      };
 
-        // 2. 拦截可能存在的普通本地 HTTP 请求（如 /healthz 或静态配置读取）
-        const originalFetch = window.fetch;
-        window.fetch = function(input, init) {
-            if (typeof input === 'string' && input.includes('/healthz')) {
-                return Promise.resolve(new Response(JSON.stringify({ status: "ok", mode: "offline-standalone" })));
-            }
-            return originalFetch(input, init);
-        };
-    </script>
+      // 2. 拦截本地静态探测请求
+      const originalFetch = window.fetch;
+      window.fetch = function(input, init) {
+          if (typeof input === 'string' && input.includes('/healthz')) {
+              return Promise.resolve(new Response(JSON.stringify({ status: "ok", mode: "offline-standalone" })));
+          }
+          return originalFetch(input, init);
+      };
+  </script>
 </head>
 <body>
   <div id="app"></div>
@@ -147,10 +148,9 @@
   </div>
 
   <noscript><p style="color:#c3cbc7;text-align:center;padding:40px">需要启用 JavaScript 才能运行本游戏。</p></noscript>
+  
   <script>
-    // Boot diagnostics (plain ES5: runs everywhere). A browser too old for the app says so instead of spinning forever:
-    // no ES modules (nomodule below), a module graph that cannot load (e.g. import maps: Safari / iOS < 16.4), or no
-    // boot after 9 s.
+    // Boot diagnostics 
     window.__spBootFail = function (why) {
       var e = document.getElementById('boot-err');
       if (!e || e.getAttribute('data-final')) return;
@@ -161,20 +161,21 @@
         : '游戏脚本加载失败，请检查网络连接后刷新页面。';
       e.setAttribute('data-final', '1');
     };
-    // a module graph that fails to link (bare specifier without import-map support) reports here, not on the <script>
+
     window.addEventListener('error', function (ev) {
       var b = document.getElementById('boot');
       if (!b || b.classList.contains('is-done')) return;
       if (/specifier|resolve|import|module/i.test(String(ev && ev.message))) window.__spBootFail('load');
     });
   </script>
+  
+  <!-- 核心程序入口加载 -->
   <script type="module" src="js/main.js" onerror="window.__spBootFail && window.__spBootFail('load')"></script>
   <script nomodule>window.__spBootFail && window.__spBootFail('old');</script>
   <script>
-    // If modules never boot (very old browser / blocked script), explain instead of spinning forever.
     setTimeout(function () {
       var b = document.getElementById('boot'), e = document.getElementById('boot-err');
-      if (b && !b.classList.contains('is-done') && e && !e.textContent) e.textContent = '加载时间较长…如长时间无响应，请使用最新版 Chrome / Edge / Safari / Firefox 并刷新页面。';
+      if (b && !b.classList.contains('is-done') && e && !e.textContent) e.textContent = '加载时间较长或无响应，请使用最新版 Chrome / Edge / Safari / Firefox 并刷新页面。';
     }, 9000);
   </script>
 </body>
