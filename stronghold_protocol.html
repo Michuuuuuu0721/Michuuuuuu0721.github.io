@@ -1,0 +1,37 @@
+---
+layout: null
+permalink: /stronghold_protocol/
+---
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>卫戍协议：盟约 · 单机离线版</title>
+    <style>
+        /* 锁死全屏，消灭滚动条，营造绝对沉浸感 */
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: black !important;
+            width: 100% !important;
+            height: 100vh !important;
+            overflow: hidden !important;
+        }
+
+        /* 核心沙盒：完美将游戏的前端完整世界内嵌进来 */
+        .game-sandbox {
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 💡 通过 iframe 创造一个绝对隔离的独立作用域 -->
+    <iframe class="game-sandbox" src="/stronghold_protocol/index.html"></iframe>
+
+</body>
+</html>
