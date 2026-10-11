@@ -112,3 +112,7 @@ friends: [
         href: "https://lyin-ull.github.io/Lyin.github.io/"
     }
 ]
+
+include:
+  - stronghold_protocol
+  - stronghold_protocol/vendor
