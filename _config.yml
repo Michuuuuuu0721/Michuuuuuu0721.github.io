@@ -115,4 +115,8 @@ friends: [
 
 include:
   - stronghold_protocol
+  - stronghold_protocol/css
+  - stronghold_protocol/js
   - stronghold_protocol/vendor
+  - stronghold_protocol/fonts
+  - stronghold_protocol/data
