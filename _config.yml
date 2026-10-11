@@ -35,7 +35,8 @@ exclude:
     "README.zh.md",
     "stronghold_protocol/vendor/bundle",
     "stronghold_protocol/vendor/ruby",
-    "vendor/bundle"
+    "vendor/bundle",
+    "stronghold_protocol"
   ]
 anchorjs: true # if you want to customize anchor. check out line:181 of `post.html`
 # If you have timezone issue (e.g. #68) in China, uncomment to use this:
@@ -115,11 +116,3 @@ friends: [
         href: "https://lyin-ull.github.io/Lyin.github.io/"
     }
 ]
-
-include:
-  - stronghold_protocol
-  - stronghold_protocol/css
-  - stronghold_protocol/js
-  - stronghold_protocol/vendor
-  - stronghold_protocol/fonts
-  - stronghold_protocol/data
