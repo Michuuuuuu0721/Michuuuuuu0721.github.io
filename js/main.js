@@ -1,0 +1,1 @@
+../stronghold_protocol/js/main.js
