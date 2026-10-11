@@ -2,32 +2,15 @@
 layout: default
 title: 404
 hide-in-nav: true
+description: "找不到&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;你的手了。"
+header-img: "img/404-bg.jpg"
 permalink: /404.html
 ---
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Redirecting...</title>
-    <script>
-        // 💡 这是一个高级动态路由网关
-        var currentPath = window.location.pathname;
-        
-        // 1. 检查这个错误的 404 请求是不是游戏发出来的（比如请求 /css, /vendor, /js, /assets）
-        var gameFolders = ['/css/', '/vendor/', '/js/', '/fonts/', '/assets/', '/icons/'];
-        var isGameResource = gameFolders.some(function(folder) {
-            return currentPath.startsWith(folder);
-        });
 
-        // 2. 如果是游戏资源，自动帮它补上 /stronghold_protocol 前缀，并悄悄重新加载
-        if (isGameResource) {
-            window.location.replace('/stronghold_protocol' + currentPath + window.location.search);
-        } else {
-            // 如果是普通的 404 错误，显示你原本博客的 404 提示
-            document.write('<h1 style="color:white; text-align:center; margin-top:20vh;">404 - Page Not Found</h1>');
-        }
-    </script>
-</head>
-<body style="background-color: black;">
-</body>
-</html>
+
+<!-- Page Header -->
+{% include intro-header.html type="page" short='true' %}
+
+<script>
+	document.body.classList.add('page-fullscreen');
+</script>
