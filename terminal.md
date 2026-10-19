@@ -1,14 +1,13 @@
 ---
 layout: null
-title: terminal
+hide-in-nav: true
 permalink: /terminal/
 ---
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Terminal Core</title>
+    <title>terminal</title>
     <style>
         /* init */
         html, body {
