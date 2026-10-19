@@ -65,7 +65,7 @@ permalink: /terminal/
 </head>
 <body>
     <div class="terminal-wrapper" id="terminal-screen">
-        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.4]
+        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.5]
 (C) 2026 MICHU. ALL RIGHTS RESERVED.
 
 Welcome. 
@@ -90,22 +90,53 @@ Type 'help' to view available commands.
   clear       Clear the terminal screen
   help        Display this information map`;
         /* arg context machine state */
-        const shadowAgents = ['M.E.M.O.', 'Lyin_', 'invidia'];
         let currentContext = {
             isSandboxActive: false,
             activeAgent: 'visitor',
             currentPath: '/'
         };
-        /* built-in sandbox file system matrix */
+        /* ========================================================================= */
+        /* [EDITABLE AREA] CONFIG MATRIX: FORK & EDIT YOUR ARG PLOT SCRIPT HERE      */
+        /* ========================================================================= */
+        /* 
+           DATABASE CONFIG:
+           Path -> Role (Agent) -> Files & Content mapping.
+           The keys inside each path determine the available shadowAgents dynamically.
+        */
         const sandboxFS = {
-            '/M.E.M.O./': {
-                files: ['anomaly.txt', 'sector_config.bak'],
-                content: {
-                    'anomaly.txt': 'WARNING: Data corruption inside Jekyll root environment.\nTrace hint: Verify the blur transitions inside /gallery.html/.',
-                    'sector_config.bak': 'DECRYPTION KEY: SYNC=SUCCESSFUL\nNext staging permalink protocol: /stronghold_protocol/'
+            '/sandbox/': {
+                'M.E.M.O.': {
+                    files: ['override.log'],
+                    content: {
+                        'override.log': 'DEUS_EX PAYLOAD:\nRoot system protocol hijacked. Requesting backup from m_e_m_o.'
+                    }
+                },
+                'Lyin_': {
+                    files: ['anomaly.txt', 'sector_config.bak'],
+                    content: {
+                        'anomaly.txt': 'M_E_M_O PLOT:\nTrace hint: Verify the blur transitions inside /gallery.html/.',
+                        'sector_config.bak': 'Next staging permalink protocol:'
+                    }
+                },
+                'invidia': {
+                    files: ['shadow.bak'],
+                    content: {
+                        'shadow.bak': 'PHANTOM_404 ERROR:\nI am trapped in this sector. Who shifted the identity matrix?'
+                    }
+                }
+            },
+            '/another_sector/': {
+                'whoareyou': {
+                    files: ['restrict.txt'],
+                    content: {
+                        'restrict.txt': 'OVERSEER MONITOR:\nWatching the filesystem. Do not attempt a breach.'
+                    }
                 }
             }
         };
+        /* ========================================================================= */
+        /* [END OF EDITABLE AREA] BELOW IS CORE LOGIC ENGINE - DO NOT TOUCH         */
+        /* ========================================================================= */
         /* focus guard */
         document.addEventListener('click', () => {
             inputField.focus();
@@ -148,13 +179,16 @@ Type 'help' to view available commands.
                     historyBox.textContent = '';
                     break;
                 case 'ls':
-                    /* verify environment mapping */
+                    /* verify environment & role routing isolation */
                     if (currentContext.isSandboxActive && sandboxFS[currentContext.currentPath]) {
-                        const fileString = sandboxFS[currentContext.currentPath].files.join('    ');
-                        printLine(fileString);
+                        const roleData = sandboxFS[currentContext.currentPath][currentContext.activeAgent];
+                        if (roleData && roleData.files) {
+                            printLine(roleData.files.join('    '));
+                        } else {
+                            printLine(`ls: current agent matrix directory is empty.`);
+                        }
                     } else {
-                        /* standard physical branch limits warning */
-                        printLine(`ls: index map locked: Baseline root directories directory indexing restricted by environment layer.`);
+                        printLine(`ls: index map locked: Root indexing restricted by environment layer.`);
                     }
                     break;
                 case 'cat':
@@ -162,13 +196,13 @@ Type 'help' to view available commands.
                         printLine('usage: cat [file_name]');
                         break;
                     }
-                    /* streaming verification process */
+                    /* routing isolated stream checker */
                     if (currentContext.isSandboxActive && sandboxFS[currentContext.currentPath]) {
-                        const fileRegistry = sandboxFS[currentContext.currentPath].content;
-                        if (fileRegistry && fileRegistry[arg]) {
-                            printLine(fileRegistry[arg]);
+                        const roleData = sandboxFS[currentContext.currentPath][currentContext.activeAgent];
+                        if (roleData && roleData.content && roleData.content[arg]) {
+                            printLine(roleData.content[arg]);
                         } else {
-                            printLine(`cat: ${arg}: No such node stream configuration in current path`);
+                            printLine(`cat: ${arg}: No such node stream in your agent inventory profile`);
                         }
                     } else {
                         printLine(`cat: ${arg}: Access denied or unreadable hardware stream descriptor`);
@@ -176,46 +210,40 @@ Type 'help' to view available commands.
                     break;
                 case 'cd':
                     if (!arg || arg === '~' || arg === '/') {
-                        /* break sandbox containment and restore identity */
                         currentContext.isSandboxActive = false;
                         syncPromptUI('visitor', '/');
                         printLine('Returned to baseline root directory: /');
                     } else {
-                        /* format target suffix path pathing */
                         let target = arg.trim();
                         if (!target.startsWith('/')) target = '/' + target;
                         if (!target.endsWith('/')) target = target + '/';
-                        /* sandbox boundary gate monitor */
+                        /* isolated sector gate monitor */
                         if (sandboxFS[target]) {
-                            currentContext.isSandboxActive = true;
-                            /* generate randomized entity signature */
-                            const rollingName = shadowAgents[Math.floor(Math.random() * shadowAgents.length)];
+                            currentContext.isSandboxActive = true;                           
+                            /* extract dynamic pool from config keys */
+                            const availableAgents = Object.keys(sandboxFS[target]);
+                            const rollingName = availableAgents[Math.floor(Math.random() * availableAgents.length)];                           
                             printLine(`Warning: Shifted tracking path to internal sandbox loop...`);
-                            printLine(`Handshake completed. Altering local signature credentials.`);                            
+                            printLine(`Identity matrix corrupted. Quantum handshake shift completed.`);                            
                             syncPromptUI(rollingName, target);
                             break;
                         }
                         printLine(`Probing destination node: ${target} ...`);                       
-                        /* block input while mapping */
                         inputField.disabled = true;
-                        /*  dynamic gateway check: fetch head pointer to verify path existence */
                         fetch(target, { method: 'HEAD' })
                         .then((response) => {
                             inputField.disabled = false;
                             inputField.focus();
                             if (response.ok) {
-                                /* 200 OK - routing confirmed */
                                 printLine(`Routing handshake established. Syncing...`);
                                 setTimeout(() => {
                                     window.location.href = target;
                                 }, 400);
                             } else {
-                                /* 404 or other errors - routing rejected */
                                 printLine(`cd: ${arg}: Suffix destination or permalink not found`);
                             }
                         })
                         .catch((error) => {
-                            /* network edge case */
                             inputField.disabled = false;
                             inputField.focus();
                             printLine(`cd: connection handshake timeout on route: ${arg}`);
