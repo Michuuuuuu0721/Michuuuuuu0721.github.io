@@ -73,15 +73,17 @@ permalink: /terminal/
 <body>
 
     <div class="terminal-wrapper" id="terminal-screen">
-        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.1]
+        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.2]
 (C) 2026 MICHU. ALL RIGHTS RESERVED.
+
+Welcome. 
 
 Type 'help' to view available commands.
 
 </div>
 
         <div class="input-line">
-            <span class="prompt">guest@michu:~#</span>
+            <span class="prompt">visitor@terminal.html ~ %</span>
             <input type="text" class="cmd-field" id="user-input" autofocus autocomplete="off" spellcheck="false">
         </div>
     </div>
@@ -107,7 +109,7 @@ Type 'help' to view available commands.
                 const rawInput = this.value;
                 const cleanInput = rawInput.trim();
                 
-                printLine(`guest@michu:~# ${rawInput}`);
+                printLine(`visitor@terminal.html ~ % ${rawInput}`);
 
                 if (cleanInput.length > 0) {
                     executeCommand(cleanInput);
@@ -179,7 +181,7 @@ Type 'help' to view available commands.
                     break;
 
                 default:
-                    printLine(`core: command not found: ${cmd}. Type 'help' for map.`);
+                    printLine(`zsh: command not found: ${cmd}. Type 'help' for map.`);
                     break;
             }
         }
