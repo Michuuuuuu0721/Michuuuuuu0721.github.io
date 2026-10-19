@@ -1,0 +1,205 @@
+---
+layout: null
+title: terminal
+permalink: /terminal/
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Terminal Core</title>
+    <style>
+        /* init */
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: black !important;
+            color: #00ff00 !important; /* terminal green */
+            width: 100% !important;
+            height: 100vh !important;
+            overflow: hidden !important;
+            font-family: 'Courier New', Courier, monospace;
+            box-sizing: border-box;
+        }
+
+        /* layout */
+        .terminal-wrapper {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .output-history {
+            white-space: pre-wrap;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .input-line {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .prompt {
+            margin-right: 10px;
+            user-select: none;
+        }
+
+        /* cmd input */
+        .cmd-field {
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+            flex: 1;
+            padding: 0;
+        }
+
+        /* scrollbar reset */
+        .terminal-wrapper::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="terminal-wrapper" id="terminal-screen">
+        <!-- history stream -->
+        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.0]
+(C) 2026 MICHU. ALL RIGHTS RESERVED.
+
+Type 'help' to view available commands.
+
+</div>
+
+        <!-- interactive active input -->
+        <div class="input-line">
+            <span class="prompt">guest@michu:~#</span>
+            <input type="text" class="cmd-field" id="user-input" autofocus autocomplete="off" spellcheck="false">
+        </div>
+    </div>
+
+    <script>
+        const inputField = document.getElementById('user-input');
+        const historyBox = document.getElementById('history-box');
+        const screenBox = document.getElementById('terminal-screen');
+
+        /* system path directories */
+        const filesystem = {
+            '/': ['gallery', 'entropy', 'endzustand', 'stronghold_protocol', 'about.txt'],
+            'gallery': 'REDIRECT',
+            'entropy': 'REDIRECT',
+            'endzustand': 'REDIRECT',
+            'stronghold_protocol': 'REDIRECT'
+        };
+
+        /* welcome cache log */
+        const helpText = `Available commands:
+  ls          List subdirectory files and destinations
+  cd [dir]    Change directory and navigate to target page suffix
+  cat [file]  Display content of a text file
+  clear       Clear the terminal screen
+  help        Display this information map`;
+
+        /* focus guard */
+        document.addEventListener('click', () => {
+            inputField.focus();
+        });
+
+        /* trigger handler */
+        inputField.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const rawInput = this.value;
+                const cleanInput = rawInput.trim();
+                
+                /* log query */
+                printLine(`guest@michu:~# ${rawInput}`);
+
+                if (cleanInput.length > 0) {
+                    executeCommand(cleanInput);
+                }
+
+                /* line flush reset */
+                this.value = '';
+                screenBox.scrollTop = screenBox.scrollHeight;
+            }
+        });
+
+        /* echo loop stream */
+        function printLine(text) {
+            historyBox.textContent += text + '\n';
+        }
+
+        /* core gateway machine */
+        function executeCommand(cmdStr) {
+            const parts = cmdStr.split(/\s+/);
+            const cmd = parts[0].toLowerCase();
+            const arg = parts[1];
+
+            switch (cmd) {
+                case 'help':
+                    printLine(helpText);
+                    break;
+
+                case 'clear':
+                    historyBox.textContent = '';
+                    break;
+
+                case 'ls':
+                    printLine(filesystem['/'].join('    '));
+                    break;
+
+                case 'cat':
+                    if (!arg) {
+                        printLine('usage: cat [filename]');
+                    } else if (arg === 'about.txt') {
+                        printLine('Michu.\nMore than just an everyday person.\nSystem active.');
+                    } else if (filesystem['/'].includes(arg) && arg !== 'about.txt') {
+                        printLine(`cat: ${arg}: Is a directory folder`);
+                    } else {
+                        printLine(`cat: ${arg}: No such file or data element`);
+                    }
+                    break;
+
+                case 'cd':
+                    if (!arg || arg === '~' || arg === '/') {
+                        /* stay at root directory */
+                        printLine('Returned to core baseline directory: /');
+                    } else {
+                        /* tracking verification filter */
+                        const target = arg.replace(/^\/+|\/+\$/g, ''); // strip outer slashes
+                        
+                        if (filesystem['/'].includes(target) && target !== 'about.txt') {
+                            printLine(`Establishing routing sync to: /${target}/ ...`);
+                            /* navigation jump delay */
+                            setTimeout(() => {
+                                window.location.href = `/${target}/`;
+                            }, 600);
+                        } else if (target === 'about.txt') {
+                            printLine('cd: about.txt: Not a directory structure');
+                        } else {
+                            printLine(`cd: ${arg}: Path target not found`);
+                        }
+                    }
+                    break;
+
+                default:
+                    /* terminal error fallback */
+                    printLine(`core: command not found: ${cmd}. Type 'help' for map.`);
+                    break;
+            }
+        }
+    </script>
+
+</body>
+</html>
