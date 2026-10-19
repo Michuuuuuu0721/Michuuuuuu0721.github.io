@@ -1,8 +1,6 @@
 ---
 title: Gallery
 layout: default
-description: "「Gallery.」"
-header-img: "img/404-bg.jpg"
 permalink: /gallery/
 ---
 <!DOCTYPE html>
@@ -20,7 +18,7 @@ permalink: /gallery/
             padding-left: 20px;
             background-color: black; font-family: sans-serif;
         }
-        /* 1. CSS Grid 网格布局 */
+        /* Grids */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -33,27 +31,27 @@ permalink: /gallery/
             background-color: #111;
         }
         
-        /* 高度跨度 马赛克错落感 */
-        .gallery-item:nth-child(3n+1) { grid-row: span 2; } /* 有的高度占两格 */
+        /* mosaica */
+        .gallery-item:nth-child(3n+1) { grid-row: span 2; }
         .gallery-item:nth-child(4n+2) { grid-row: span 1.5; } 
 
         .gallery-item a { display: block; width: 100%; height: 100%; }
 
-        /* 低清形式初始状态 */
+        /* blur */
         .gallery-item img {
             width: 100%; height: 100%; object-fit: cover;
-            filter: blur(15px); /* 一开始高度模糊，伪装成低清 */
-            transform: scale(1.05); /* 稍微放大防止边缘出现白边 */
+            filter: blur(15px);
+            transform: scale(1.05);
             transition: filter 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s;
         }
 
-        /* 鼠标悬停时变清晰 轻微放大动效 */
+        /* hover */
         .gallery-item:hover img {
-            filter: blur(0px); /* 悬停时去除模糊 变清晰 */
+            filter: blur(0px);
             transform: scale(1.0);
         }
 
-        /* 标题和简述提示 */
+        /* text */
         .item-overlay {
             position: absolute; bottom: 0; left: 0; right: 0;
             padding: 20px; background: linear-gradient(transparent, rgba(0,0,0,0.8));
@@ -64,14 +62,10 @@ permalink: /gallery/
     </style>
 </head>
 <body>
-
-    <!-- 画廊大网格 -->
     <div class="gallery-grid">
-        <!-- 读取 _paintings 所有画作 -->
         {% for painting in site.paintings %}
         <div class="gallery-item">
             <a href="{{ painting.url }}">
-                <!-- 通过 CSS 强制高度模糊 悬停时变清晰 -->
                 <img src="{{ painting.image_high }}" alt="{{ painting.title }}">
                 <div class="item-overlay">
                     <div class="item-title">{{ painting.title }}</div>
@@ -80,6 +74,5 @@ permalink: /gallery/
         </div>
         {% endfor %}
     </div>
-
 </body>
 </html>

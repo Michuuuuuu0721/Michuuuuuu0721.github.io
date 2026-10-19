@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 动态读取独立 md 文件中填写的 title -->
+    <!-- title -->
     <title>{{ page.title }}</title>
     <style>
-        /* 统一的沉浸式黑底和字体样式 */
         body {
             margin: 0; 
             background-color: black !important; 
@@ -20,7 +19,6 @@
             padding: 20px;
             box-sizing: border-box;
         }
-        /* 大图容器 */
         .art-container { 
             max-width: 90%; 
             max-height: 70vh; 
@@ -31,7 +29,6 @@
             max-height: 70vh; 
             object-fit: contain; 
         }
-        /* 描述空间样式 */
         .info-box { 
             margin-top: 20px; 
             text-align: center; 
@@ -47,13 +44,11 @@
             color: #888; 
             line-height: 1.6; 
         }
-        /* 额外描述属性（如日期、媒介）的独立样式 */
         .meta-info {
             font-size: 12px;
             color: #555;
             margin-top: 5px;
         }
-        /* 返回画廊的按钮 */
         .back-btn { 
             margin-top: 30px; 
             color: #444; 
@@ -69,7 +64,7 @@
 <body>
 
     <div class="art-container">
-        <!-- 动态读取高清图路径 -->
+        <!-- image path -->
         <img src="{{ page.image_high }}" alt="{{ page.title }}" loading="eager" decoding="async">
     </div>
     
@@ -77,7 +72,7 @@
         <div class="title">{{ page.title }}</div>
         <div class="desc">{{ page.description }}</div>
         
-        <!-- 💡 进阶：如果你以后想加日期或所用工具，只要 md 里面有写，这里就会自动显示 -->
+        <!-- date / info -->
         {% if page.date_created or page.medium %}
         <div class="meta-info">
             {% if page.date_created %}{{ page.date_created }}{% endif %}
@@ -87,7 +82,7 @@
         {% endif %}
     </div>
     
-    <!-- 内容锚点（如果以后想在 md 里写额外的正文或评论，会渲染在这里） -->
+    <!-- content anchor -->
     {{ content }}
 
     <a href="/gallery/" class="back-btn">← Back to Gallery</a>

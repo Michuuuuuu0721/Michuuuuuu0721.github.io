@@ -10,7 +10,7 @@ header-img: "img/bg-projects.jpg"
 <div class="container">
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-      <!-- 按日期倒序排列项目 -->
+      <!-- sort -->
       {% assign projects = site.projects | sort: 'date' | reverse %}
       
       <div class="projects-grid">
@@ -25,7 +25,7 @@ header-img: "img/bg-projects.jpg"
                 <p class="project-excerpt">
                   {{ project.content | strip_html | truncate: 120 }}
                 </p>
-                <!-- 显示标签 -->
+                <!-- tags -->
                 {% if project.tags %}
                   <div class="project-tags">
                     {% for tag in project.tags %}

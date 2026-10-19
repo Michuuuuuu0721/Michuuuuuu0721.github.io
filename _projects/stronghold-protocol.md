@@ -10,7 +10,7 @@ permalink: /stronghold-protocol/
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>卫戍协议：盟约 · 神经连接中</title>
     <style>
-        /* 1. 锁死纯黑美学背景，防止任何溢出滚动条 */
+        /* BG */
         html, body {
             margin: 0 !important;
             padding: 0 !important;
@@ -26,14 +26,12 @@ permalink: /stronghold-protocol/
             align-items: center;
             box-sizing: border-box;
         }
-
-        /* 2. 居中容器 */
+        /* Cont. */
         .terminal-box {
             text-align: center;
             max-width: 90%;
         }
-
-        /* 3. 小字排版 */
+        /* text */
         .status-text {
             font-size: 14px;
             letter-spacing: 2px;
@@ -41,14 +39,12 @@ permalink: /stronghold-protocol/
             margin-bottom: 8px;
             font-weight: 300;
         }
-
         .countdown-text {
             font-size: 12px;
             color: #555;
             letter-spacing: 1px;
         }
-
-        /* 4. 加载微光动效 */
+        /* Loading */
         .loading-bar {
             width: 120px;
             height: 1px;
@@ -73,28 +69,23 @@ permalink: /stronghold-protocol/
     </style>
 </head>
 <body>
-
     <div class="terminal-box">
-        <!-- 小字 -->
+        <!-- text -->
         <div class="status-text">CONNECTING TO STRONGHOLD PROTOCOL SERVER...</div>
-        <div class="countdown-text" id="timer">NEURAL LINK WILL BE ESTABLISHED IN 1.5S</div>
-        
-        <!-- 进度条 -->
+        <div class="countdown-text" id="timer">NEURAL LINK WILL BE ESTABLISHED IN 1.5S</div>      
+        <!-- loading -->
         <div class="loading-bar"></div>
     </div>
-
-    <!-- 重定向状态机 -->
+    <!-- redirect -->
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            //  Railway 主站链接
-            const targetUrl = "https://stronghold-protocol-michu.up.railway.app/";
-            
-            // 延迟跳转
+            //  Railway link
+            const targetUrl = "https://stronghold-protocol-michu.up.railway.app/";           
+            // time
             setTimeout(() => {
                 window.location.replace(targetUrl);
             }, 1500);
         });
     </script>
-
 </body>
 </html>
