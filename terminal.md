@@ -10,62 +10,20 @@ permalink: /terminal/
     <title>terminal</title>
     <style>
         /* init */
-        html, body {
-            margin: 0 !important;
-            padding: 0 !important;
-            background-color: black !important;
-            color: #FFFFFF !important;
-            width: 100% !important;
-            height: 100vh !important;
-            overflow: hidden !important;
-            font-family: 'Courier New', Courier, monospace;
-            box-sizing: border-box;
-        }
+        html, body { margin: 0 !important; padding: 0 !important; background-color: black !important; color: #FFFFFF !important; width: 100% !important; height: 100vh !important; overflow: hidden !important; font-family: 'Courier New', Courier, monospace; box-sizing: border-box; }
         /* layout */
-        .terminal-wrapper {
-            width: 100%;
-            height: 100%;
-            padding: 20px;
-            box-sizing: border-box;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-        .output-history {
-            white-space: pre-wrap;
-            line-height: 1.5;
-            font-size: 14px;
-        }
-        .input-line {
-            display: flex;
-            align-items: center;
-            margin-top: 5px;
-            font-size: 14px;
-        }
-        .prompt {
-            margin-right: 10px;
-            user-select: none;
-        }
+        .terminal-wrapper { width: 100%; height: 100%; padding: 20px; box-sizing: border-box; overflow-y: auto; display: flex; flex-direction: column; }
+        .output-history { white-space: pre-wrap; line-height: 1.5; font-size: 14px; }
+        .input-line { display: flex; align-items: center; margin-top: 5px; font-size: 14px; }
+        .prompt { margin-right: 10px; user-select: none; }
         /* cmd input */
-        .cmd-field {
-            background: transparent;
-            border: none;
-            color: #FFFFFF;
-            font-family: inherit;
-            font-size: inherit;
-            outline: none;
-            flex: 1;
-            padding: 0;
-        }
-        .terminal-wrapper::-webkit-scrollbar {
-            width: 0px;
-            background: transparent;
-        }
+        .cmd-field { background: transparent; border: none; color: #FFFFFF; font-family: inherit; font-size: inherit; outline: none; flex: 1; padding: 0; }
+        .terminal-wrapper::-webkit-scrollbar { width: 0px; background: transparent; }
     </style>
 </head>
 <body>
     <div class="terminal-wrapper" id="terminal-screen">
-        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.11]
+        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.12]
 (C) 2026 MICHU. ALL RIGHTS RESERVED.
 
 Welcome. 
@@ -103,7 +61,7 @@ Type 'help' to view available commands.
         function executeCommand(cmdStr) {
             const parts = cmdStr.split(/\s+/);
             const cmd = parts[0].toLowerCase();
-            const arg = cmdStr.substring(cmdStr.indexOf(parts[0]) + parts[0].length).trim(); // ✨ Fixed: Calculate indexing using primitive string key bounds
+            const arg = cmdStr.substring(cmdStr.indexOf(parts[0]) + parts[0].length).trim();
             switch (cmd) {
                 case 'help':
                     printLine(helpText);
@@ -116,7 +74,16 @@ Type 'help' to view available commands.
                         const roleData = sandboxFS[currentContext.currentPath][currentContext.activeAgent];
                         if (roleData && roleData.files) { printLine(roleData.files.join('    ')); }
                         else { printLine(`ls: current agent matrix directory is empty.`); }
-                    } else { printLine(`ls: index map locked: Root indexing restricted by environment layer.`); }
+                    } else {
+                        inputField.disabled = true;
+                        const targets = ['index.html', 'about.html', 'archive.html', 'gallery.html', 'search.json', 'feed.xml', '404.html'];
+                        let discovered = [];
+                        let probes = targets.map(t => fetch('/' + t, { method: 'HEAD' }).then(res => { if (res.ok) discovered.push(t); }));
+                        Promise.all(probes).then(() => {
+                            inputField.disabled = false; inputField.focus();
+                            printLine(discovered.length > 0 ? discovered.join('    ') : 'ls: no structural public nodes exposed in this segment.');
+                        });
+                    }
                     break;
                 case 'cat':
                     if (!arg) { printLine('usage: cat [file_name]'); break; }
@@ -124,7 +91,21 @@ Type 'help' to view available commands.
                         const roleData = sandboxFS[currentContext.currentPath][currentContext.activeAgent];
                         if (roleData && roleData.content && roleData.content[arg]) { printLine(roleData.content[arg]); }
                         else { printLine(`cat: ${arg}: No such node stream in your agent inventory profile`); }
-                    } else { printLine(`cat: ${arg}: Access denied or unreadable hardware stream descriptor`); }
+                    } else {
+                        let targetFile = arg;
+                        if (!targetFile.startsWith('/')) targetFile = '/' + targetFile;
+                        inputField.disabled = true;
+                        fetch(targetFile).then(res => {
+                            if (!res.ok) throw new Error();
+                            return res.text();
+                        }).then(text => {
+                            inputField.disabled = false; inputField.focus();
+                            printLine(text.slice(0, 1500) + (text.length > 1500 ? '\n... [TRUNCATED SYSTEM STREAM PAYLOAD]' : ''));
+                        }).catch(() => {
+                            inputField.disabled = false; inputField.focus();
+                            printLine(`cat: ${arg}: Standard physical file stream resource not found`);
+                        });
+                    }
                     break;
                 case 'cd':
                     if (!arg || arg === '~' || arg === '/') {
@@ -167,7 +148,5 @@ Type 'help' to view available commands.
             }
         }
     </script>
-
 </body>
 </html>
-
