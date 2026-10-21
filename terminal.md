@@ -10,20 +10,62 @@ permalink: /terminal/
     <title>terminal</title>
     <style>
         /* init */
-        html, body { margin: 0 !important; padding: 0 !important; background-color: black !important; color: #FFFFFF !important; width: 100% !important; height: 100vh !important; overflow: hidden !important; font-family: 'Courier New', Courier, monospace; box-sizing: border-box; }
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: black !important;
+            color: #FFFFFF !important;
+            width: 100% !important;
+            height: 100vh !important;
+            overflow: hidden !important;
+            font-family: 'Courier New', Courier, monospace;
+            box-sizing: border-box;
+        }
         /* layout */
-        .terminal-wrapper { width: 100%; height: 100%; padding: 20px; box-sizing: border-box; overflow-y: auto; display: flex; flex-direction: column; }
-        .output-history { white-space: pre-wrap; line-height: 1.5; font-size: 14px; }
-        .input-line { display: flex; align-items: center; margin-top: 5px; font-size: 14px; }
-        .prompt { margin-right: 10px; user-select: none; }
+        .terminal-wrapper {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .output-history {
+            white-space: pre-wrap;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        .input-line {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        .prompt {
+            margin-right: 10px;
+            user-select: none;
+        }
         /* cmd input */
-        .cmd-field { background: transparent; border: none; color: #FFFFFF; font-family: inherit; font-size: inherit; outline: none; flex: 1; padding: 0; }
-        .terminal-wrapper::-webkit-scrollbar { width: 0px; background: transparent; }
+        .cmd-field {
+            background: transparent;
+            border: none;
+            color: #FFFFFF;
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+            flex: 1;
+            padding: 0;
+        }
+        .terminal-wrapper::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
     </style>
 </head>
 <body>
     <div class="terminal-wrapper" id="terminal-screen">
-        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.19]
+        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.15]
 (C) 2026 MICHU. ALL RIGHTS RESERVED.
 
 Welcome. 
@@ -40,59 +82,84 @@ Type 'help' to view available commands.
         const inputField = document.getElementById('user-input');
         const historyBox = document.getElementById('history-box');
         const screenBox = document.getElementById('terminal-screen');
-        const promptLabel = document.getElementById('terminal-prompt');        
+        const promptLabel = document.getElementById('terminal-prompt');
         const helpText = `Available commands:\n  cd [dir]    Dynamic routing jump to any valid page suffix / permalink\n  ls          List memory nodes or structural entities in current sector\n  cat [file]  Read stream payload from a specific target node\n  clear       Clear the terminal screen\n  help        Display this information map`;
         let currentContext = { isSandboxActive: false, activeAgent: 'visitor', currentPath: '/' };
-        let sandboxFS = {};
-        fetch('/arg_gateway.json', { cache: 'no-store' }).then(res => res.json()).then(data => { sandboxFS = data || {}; }).catch(err => { sandboxFS = {}; printLine('Warning: Remote blueprint gateway mapping offline.'); });
+        /* ========================================== */
+        /* [EDITABLE] CONFIG MATRIX - MODIFY CONFIGS HERE */
+        /* ========================================== */
+        const sandboxFS = {
+            '/sandbox/': {
+                'M.E.M.O.': {
+                    files: ['override.log'],
+                    content: { 'override.log': 'DEUS_EX PAYLOAD:\nRoot system protocol hijacked. Requesting backup from m_e_m_o.' }
+                },
+                'Lyin_': {
+                    files: ['anomaly.txt'],
+                    content: {
+                        'anomaly.txt': 'M_E_M_O PLOT:\nTrace hint: Verify the blur transitions inside /gallery.html/.'
+                    }
+                },
+                'Invidia': {
+                    files: ['shadow.bak'],
+                    content: { 'shadow.bak': 'PHANTOM_404 ERROR:\nI am trapped in this sector. Who shifted the identity matrix?' }
+                }
+            },
+            '/another_sector/': {
+                'overseer': {
+                    files: ['restrict.txt'],
+                    content: { 'restrict.txt': 'OVERSEER MONITOR:\nWatching the filesystem. Do not attempt a breach.' }
+                }
+            }
+        };
+        /* ========================================== */
+        /* [END OF EDITABLE] ENGINE RUNTIME LOGIC     */
+        /* ========================================== */
         document.addEventListener('click', () => { inputField.focus(); });
         inputField.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                event.preventDefault();
                 const rawInput = this.value;
-                const cleanInput = rawInput.trim();                  
-                printLine(`${currentContext.activeAgent}@terminal.html ${currentContext.currentPath === '/' ? '~' : currentContext.currentPath} % ${rawInput}`);                
+                const cleanInput = rawInput.trim();   
+                printLine(`${currentContext.activeAgent}@terminal.html ${currentContext.currentPath === '/' ? '~' : currentContext.currentPath} % ${rawInput}`);
                 if (cleanInput.length > 0) { executeCommand(cleanInput); }
                 this.value = '';
                 screenBox.scrollTop = screenBox.scrollHeight;
             }
         });
         function printLine(text) {
-            const secureText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            historyBox.innerHTML += secureText + '\n';
+            historyBox.textContent += text + '\n';
             screenBox.scrollTop = screenBox.scrollHeight;
         }
-        function syncPromptUI(agent, path) { currentContext.activeAgent = agent; currentContext.currentPath = path; promptLabel.textContent = `${agent}@terminal.html ${path === '/' ? '~' : path} %`; }
+        function syncPromptUI(agent, path) {
+            currentContext.activeAgent = agent;
+            currentContext.currentPath = path;
+            promptLabel.textContent = `${agent}@terminal.html ${path === '/' ? '~' : path} %`;
+        }
         function executeCommand(cmdStr) {
-            const trimmedStr = cmdStr.trim();
-            const firstSpace = trimmedStr.indexOf(' ');
-            const cmd = (firstSpace === -1 ? trimmedStr : trimmedStr.substring(0, firstSpace)).toLowerCase();
-            const arg = (firstSpace === -1 ? "" : trimmedStr.substring(firstSpace).trim());
+            const parts = cmdStr.split(/\s+/);
+            const cmd = parts[0].toLowerCase();
+            const arg = parts[1];
             switch (cmd) {
                 case 'help':
                     printLine(helpText);
                     break;
                 case 'clear':
-                    historyBox.innerHTML = '';
+                    historyBox.textContent = '';
                     break;
                 case 'ls':
-                    if (currentContext.isSandboxActive && sandboxFS && sandboxFS[currentContext.currentPath]) {
+                    if (currentContext.isSandboxActive && sandboxFS[currentContext.currentPath]) {
                         const roleData = sandboxFS[currentContext.currentPath][currentContext.activeAgent];
                         if (roleData && roleData.files) { printLine(roleData.files.join('    ')); }
                         else { printLine(`ls: current agent matrix directory is empty.`); }
-                    } else {
-                        printLine(`ls: indexing restricted: Use 'cd' to break into a baseline narrative sector.`);
-                    }
+                    } else { printLine(`ls: index map locked: Root indexing restricted by environment layer.`); }
                     break;
                 case 'cat':
                     if (!arg) { printLine('usage: cat [file_name]'); break; }
-                    if (currentContext.isSandboxActive && sandboxFS && sandboxFS[currentContext.currentPath]) {
+                    if (currentContext.isSandboxActive && sandboxFS[currentContext.currentPath]) {
                         const roleData = sandboxFS[currentContext.currentPath][currentContext.activeAgent];
                         if (roleData && roleData.content && roleData.content[arg]) { printLine(roleData.content[arg]); }
                         else { printLine(`cat: ${arg}: No such node stream in your agent inventory profile`); }
-                    } else {
-                        printLine(`cat: ${arg}: Permission denied. Access metadata stream inside a sector.`);
-                    }
+                    } else { printLine(`cat: ${arg}: Access denied or unreadable hardware stream descriptor`); }
                     break;
                 case 'cd':
                     if (!arg || arg === '~' || arg === '/') {
@@ -100,14 +167,14 @@ Type 'help' to view available commands.
                         syncPromptUI('visitor', '/');
                         printLine('Returned to baseline root directory: /');
                     } else {
-                        let target = arg;
+                        let target = arg.trim();
                         if (!target.startsWith('/')) target = '/' + target;
                         if (!target.endsWith('/')) target = target + '/';
-                        if (sandboxFS && sandboxFS[target]) {
-                            currentContext.isSandboxActive = true;                           
+                        if (sandboxFS[target]) {
+                            currentContext.isSandboxActive = true;
                             const availableAgents = Object.keys(sandboxFS[target]);
-                            const rollingName = availableAgents[Math.floor(Math.random() * availableAgents.length)];                           
-                            printLine(`Warning: Entering unmapped sandbox sector...\nIdentity matrix corrupted. Dynamic quantum handshake completed.`);                            
+                            const rollingName = availableAgents[Math.floor(Math.random() * availableAgents.length)];
+                            printLine(`Warning: Shifted tracking path to internal sandbox loop...\nHandshake completed. Altering local signature credentials.`);
                             syncPromptUI(rollingName, target);
                             break;
                         }
