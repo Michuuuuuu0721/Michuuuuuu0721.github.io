@@ -1,6 +1,6 @@
 ---
 layout: null
-permalink: /sandbox/M.E.M.O./override.log/
+permalink: /sandbox/
 ---
 
 <html lang="zh">
