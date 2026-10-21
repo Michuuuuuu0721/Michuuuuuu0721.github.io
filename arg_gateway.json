@@ -1,37 +1,25 @@
----
-layout: null
-permalink: /arg_gateway.json
----
-{%- assign gateway_matrix = site.empty_hash -%}
 {%- assign grouped_sectors = site.arg | group_by: "sector" -%}
-
+{
 {%- for sector in grouped_sectors -%}
   {%- assign sector_name = sector.name | strip -%}
   {%- if sector_name == "" %}{% continue %}{% endif -%}
-  
-  {%- assign agent_hash = site.empty_hash -%}
-  {%- assign grouped_agents = sector.items | group_by: "agent" -%}
-  
-  {%- for agent in grouped_agents -%}
-    {%- assign agent_name = agent.name | strip -%}
-    {%- if agent_name == "" %}{% continue %}{% endif -%}
-    
-    {%- assign files_array = site.empty_array -%}
-    {%- assign content_hash = site.empty_hash -%}
-    
-    {%- for item in agent.items -%}
-      {%- assign filename = item.filename | strip -%}
-      {%- if filename == "" %}{% continue %}{% endif -%}
-      
-      {%- assign files_array = files_array | push: filename -%}
-      {%- assign content_hash = content_hash | hash_set: filename, item.terminal_stream -%}
+  "{{ sector_name }}": {
+    {%- assign grouped_agents = sector.items | group_by: "agent" -%}
+    {%- for agent in grouped_agents -%}
+      {%- assign agent_name = agent.name | strip -%}
+      {%- if agent_name == "" %}{% continue %}{% endif -%}
+      "{{ agent_name }}": {
+        "files": [{%- for item in agent.items -%}{%- assign f = item.filename | strip -%}{%- if f == "" %}{% continue %}{% endif -%}"{{ f }}"{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}],
+        "content": {
+          {%- for item in agent.items -%}
+            {%- assign f = item.filename | strip -%}
+            {%- if f == "" %}{% continue %}{% endif -%}
+            "{{ f }}": {{ item.terminal_stream | strip_newlines | jsonify }}
+            {%- unless forloop.last -%},{%- endunless -%}
+          {%- endfor -%}
+        }
+      }{%- unless forloop.last -%},{%- endunless -%}
     {%- endfor -%}
-    
-    {%- assign agent_data = site.empty_hash | hash_set: "files", files_array | hash_set: "content", content_hash -%}
-    {%- assign agent_hash = agent_hash | hash_set: agent_name, agent_data -%}
-  {%- endfor -%}
-  
-  {%- assign gateway_matrix = gateway_matrix | hash_set: sector_name, agent_hash -%}
+  }{%- unless forloop.last -%},{%- endunless -%}
 {%- endfor -%}
-
-{{ gateway_matrix | jsonify }}
+}

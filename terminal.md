@@ -23,7 +23,7 @@ permalink: /terminal/
 </head>
 <body>
     <div class="terminal-wrapper" id="terminal-screen">
-        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.14]
+        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.16]
 (C) 2026 MICHU. ALL RIGHTS RESERVED.
 
 Welcome. 
@@ -44,8 +44,7 @@ Type 'help' to view available commands.
         const helpText = `Available commands:\n  cd [dir]    Dynamic routing jump to any valid page suffix / permalink\n  ls          List memory nodes or structural entities in current sector\n  cat [file]  Read stream payload from a specific target node\n  clear       Clear the terminal screen\n  help        Display this information map`;
         let currentContext = { isSandboxActive: false, activeAgent: 'visitor', currentPath: '/' };
         let sandboxFS = {};
-        /* cache-busting loader: forcefully piercing service worker caches to fetch real-time json */
-        fetch('/arg_gateway.json?t=' + Date.now()).then(res => res.json()).then(data => { sandboxFS = data || {}; }).catch(err => { sandboxFS = {}; printLine('Warning: Remote blueprint gateway mapping offline.'); });
+        fetch('/arg_gateway.json', { cache: 'no-store' }).then(res => res.json()).then(data => { sandboxFS = data || {}; }).catch(err => { sandboxFS = {}; printLine('Warning: Remote blueprint gateway mapping offline.'); });
         document.addEventListener('click', () => { inputField.focus(); });
         inputField.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
@@ -119,14 +118,12 @@ Type 'help' to view available commands.
                         let target = arg;
                         if (!target.startsWith('/')) target = '/' + target;
                         if (!target.endsWith('/')) target = target + '/';
-                        /* fuzzy matching fallback to ignore jekyll space injection errors */
-                        let matchedKey = Object.keys(sandboxFS).find(k => k.trim() === target.trim());
-                        if (sandboxFS && matchedKey) {
+                        if (sandboxFS && sandboxFS[target]) {
                             currentContext.isSandboxActive = true;                           
-                            const availableAgents = Object.keys(sandboxFS[matchedKey]);
+                            const availableAgents = Object.keys(sandboxFS[target]);
                             const rollingName = availableAgents[Math.floor(Math.random() * availableAgents.length)];                           
                             printLine(`Warning: Shifted tracking path to internal sandbox loop...\nIdentity matrix corrupted. Quantum handshake shift completed.`);                            
-                            syncPromptUI(rollingName, matchedKey);
+                            syncPromptUI(rollingName, target);
                             break;
                         }
                         printLine(`Probing destination node: ${target} ...`);                       
