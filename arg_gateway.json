@@ -1,0 +1,19 @@
+{
+{% assign grouped_sectors = site.arg | group_by: "sector" %}
+{% for sector in grouped_sectors %}
+  "{{ sector.name }}": {
+    {% assign grouped_agents = sector.items | group_by: "agent" %}
+    {% for agent in grouped_agents %}
+      "{{ agent.name }}": {
+        "files": [{% for item in agent.items %}"{{ item.filename }}"{% unless forloop.last %},{% endunless %}{% endfor %}],
+        "content": {
+          {% for item in agent.items %}
+            "{{ item.filename }}": {{ item.terminal_stream | strip_newlines | jsonify }}
+            {% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        }
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  }{% unless forloop.last %},{% endunless %}
+{% endfor %}
+}

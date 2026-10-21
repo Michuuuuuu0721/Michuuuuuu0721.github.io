@@ -79,98 +79,10 @@ Type 'help' to view available commands.
         </div>
     </div>
     <script>
-        const inputField = document.getElementById('user-input');
-        const historyBox = document.getElementById('history-box');
-        const screenBox = document.getElementById('terminal-screen');
-        const promptLabel = document.getElementById('terminal-prompt');        
-        const helpText = `Available commands:
-  cd [dir]    Dynamic routing jump to any valid page suffix / permalink
-  ls          List memory nodes or structural entities in current sector
-  cat [file]  Read stream payload from a specific target node
-  clear       Clear the terminal screen
-  help        Display this information map`;
-        /* arg context machine state */
-        let currentContext = {
-            isSandboxActive: false,
-            activeAgent: 'visitor',
-            currentPath: '/'
-        };
-        /* ========================================================================= */
-        /* [EDITABLE AREA] CONFIG MATRIX: FORK & EDIT YOUR ARG PLOT SCRIPT HERE      */
-        /* ========================================================================= */
-        /* 
-           DATABASE CONFIG:
-           Path -> Role (Agent) -> Files & Content mapping.
-           The keys inside each path determine the available shadowAgents dynamically.
-        */
-        const sandboxFS = {
-            '/sandbox/': {
-                'M.E.M.O.': {
-                    files: ['override.log'],
-                    content: {
-                        'override.log': 'DEUS_EX PAYLOAD:\nRoot system protocol hijacked. Requesting backup from m_e_m_o.'
-                    }
-                },
-                'Lyin_': {
-                    files: ['anomaly.txt', 'sector_config.bak'],
-                    content: {
-                        'anomaly.txt': 'M_E_M_O PLOT:\nTrace hint: Verify the blur transitions inside /gallery.html/.',
-                        'sector_config.bak': 'Next staging permalink protocol:'
-                    }
-                },
-                'invidia': {
-                    files: ['shadow.bak'],
-                    content: {
-                        'shadow.bak': 'PHANTOM_404 ERROR:\nI am trapped in this sector. Who shifted the identity matrix?'
-                    }
-                }
-            },
-            '/another_sector/': {
-                'whoareyou': {
-                    files: ['restrict.txt'],
-                    content: {
-                        'restrict.txt': 'OVERSEER MONITOR:\nWatching the filesystem. Do not attempt a breach.'
-                    }
-                }
-            }
-        };
-        /* ========================================================================= */
-        /* [END OF EDITABLE AREA] BELOW IS CORE LOGIC ENGINE - DO NOT TOUCH         */
-        /* ========================================================================= */
-        /* focus guard */
-        document.addEventListener('click', () => {
-            inputField.focus();
-        });
-        /* trigger handler */
-        inputField.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                const rawInput = this.value;
-                const cleanInput = rawInput.trim();                  
-                /* dynamic prompt echo logger */
-                printLine(`${currentContext.activeAgent}@terminal.html ${currentContext.currentPath === '/' ? '~' : currentContext.currentPath} % ${rawInput}`);                
-                if (cleanInput.length > 0) {
-                    executeCommand(cleanInput);
-                }
-                this.value = '';
-                screenBox.scrollTop = screenBox.scrollHeight;
-            }
-        });
-        function printLine(text) {
-            historyBox.textContent += text + '\n';
-            screenBox.scrollTop = screenBox.scrollHeight;
-        }
-        /* update interface identity blueprint */
-        function syncPromptUI(agent, path) {
-            currentContext.activeAgent = agent;
-            currentContext.currentPath = path;
-            const displayPath = path === '/' ? '~' : path;
-            promptLabel.textContent = `${agent}@terminal.html ${displayPath} %`;
-        }
-        /* core runtime machine */
         function executeCommand(cmdStr) {
             const parts = cmdStr.split(/\s+/);
             const cmd = parts[0].toLowerCase();
-            const arg = parts[1];
+            const arg = cmdStr.substring(cmdStr.indexOf(parts[0]) + parts[0].length).trim(); // ✨ 完美修复：完整抓取后面所有的参数，绝不吞码
             switch (cmd) {
                 case 'help':
                     printLine(helpText);
@@ -179,33 +91,41 @@ Type 'help' to view available commands.
                     historyBox.textContent = '';
                     break;
                 case 'ls':
-                    /* verify environment & role routing isolation */
                     if (currentContext.isSandboxActive && sandboxFS[currentContext.currentPath]) {
                         const roleData = sandboxFS[currentContext.currentPath][currentContext.activeAgent];
-                        if (roleData && roleData.files) {
-                            printLine(roleData.files.join('    '));
-                        } else {
-                            printLine(`ls: current agent matrix directory is empty.`);
-                        }
+                        if (roleData && roleData.files) { printLine(roleData.files.join('    ')); }
+                        else { printLine(`ls: current agent matrix directory is empty.`); }
                     } else {
-                        printLine(`ls: index map locked: Root indexing restricted by environment layer.`);
+                        inputField.disabled = true;
+                        const targets = ['index.html', 'about.html', 'archive.html', 'gallery.html', 'search.json', 'feed.xml', '404.html'];
+                        let discovered = [];
+                        let probes = targets.map(t => fetch('/' + t, { method: 'HEAD' }).then(res => { if (res.ok) discovered.push(t); }));
+                        Promise.all(probes).then(() => {
+                            inputField.disabled = false; inputField.focus();
+                            printLine(discovered.length > 0 ? discovered.join('    ') : 'ls: no structural public nodes exposed in this segment.');
+                        });
                     }
                     break;
                 case 'cat':
-                    if (!arg) {
-                        printLine('usage: cat [file_name]');
-                        break;
-                    }
-                    /* routing isolated stream checker */
+                    if (!arg) { printLine('usage: cat [file_name]'); break; }
                     if (currentContext.isSandboxActive && sandboxFS[currentContext.currentPath]) {
                         const roleData = sandboxFS[currentContext.currentPath][currentContext.activeAgent];
-                        if (roleData && roleData.content && roleData.content[arg]) {
-                            printLine(roleData.content[arg]);
-                        } else {
-                            printLine(`cat: ${arg}: No such node stream in your agent inventory profile`);
-                        }
+                        if (roleData && roleData.content && roleData.content[arg]) { printLine(roleData.content[arg]); }
+                        else { printLine(`cat: ${arg}: No such node stream in your agent inventory profile`); }
                     } else {
-                        printLine(`cat: ${arg}: Access denied or unreadable hardware stream descriptor`);
+                        let targetFile = arg;
+                        if (!targetFile.startsWith('/')) targetFile = '/' + targetFile;
+                        inputField.disabled = true;
+                        fetch(targetFile).then(res => {
+                            if (!res.ok) throw new Error();
+                            return res.text();
+                        }).then(text => {
+                            inputField.disabled = false; inputField.focus();
+                            printLine(text.slice(0, 1500) + (text.length > 1500 ? '\n... [TRUNCATED SYSTEM STREAM PAYLOAD]' : ''));
+                        }).catch(() => {
+                            inputField.disabled = false; inputField.focus();
+                            printLine(`cat: ${arg}: Standard physical file stream resource not found`);
+                        });
                     }
                     break;
                 case 'cd':
@@ -214,17 +134,14 @@ Type 'help' to view available commands.
                         syncPromptUI('visitor', '/');
                         printLine('Returned to baseline root directory: /');
                     } else {
-                        let target = arg.trim();
+                        let target = arg;
                         if (!target.startsWith('/')) target = '/' + target;
                         if (!target.endsWith('/')) target = target + '/';
-                        /* isolated sector gate monitor */
                         if (sandboxFS[target]) {
                             currentContext.isSandboxActive = true;                           
-                            /* extract dynamic pool from config keys */
                             const availableAgents = Object.keys(sandboxFS[target]);
                             const rollingName = availableAgents[Math.floor(Math.random() * availableAgents.length)];                           
-                            printLine(`Warning: Shifted tracking path to internal sandbox loop...`);
-                            printLine(`Identity matrix corrupted. Quantum handshake shift completed.`);                            
+                            printLine(`Warning: Shifted tracking path to internal sandbox loop...\nIdentity matrix corrupted. Quantum handshake shift completed.`);                            
                             syncPromptUI(rollingName, target);
                             break;
                         }
@@ -236,12 +153,8 @@ Type 'help' to view available commands.
                             inputField.focus();
                             if (response.ok) {
                                 printLine(`Routing handshake established. Syncing...`);
-                                setTimeout(() => {
-                                    window.location.href = target;
-                                }, 400);
-                            } else {
-                                printLine(`cd: ${arg}: Suffix destination or permalink not found`);
-                            }
+                                setTimeout(() => { window.location.href = target; }, 400);
+                            } else { printLine(`cd: ${arg}: Suffix destination or permalink not found`); }
                         })
                         .catch((error) => {
                             inputField.disabled = false;

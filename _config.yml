@@ -71,6 +71,9 @@ collections:
     output: true
     permalink: /gallery/:path/
     layout: painting
+  arg:
+    output: true
+    permalink: /sandbox/:path/
 
 # Netease settings
 netease_comment: false
