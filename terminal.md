@@ -65,7 +65,7 @@ permalink: /terminal/
 </head>
 <body>
     <div class="terminal-wrapper" id="terminal-screen">
-        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.5]
+        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.11]
 (C) 2026 MICHU. ALL RIGHTS RESERVED.
 
 Welcome. 
@@ -102,8 +102,8 @@ Type 'help' to view available commands.
         function syncPromptUI(agent, path) { currentContext.activeAgent = agent; currentContext.currentPath = path; promptLabel.textContent = `${agent}@terminal.html ${path === '/' ? '~' : path} %`; }
         function executeCommand(cmdStr) {
             const parts = cmdStr.split(/\s+/);
-            const cmd = parts[0].toLowerCase(); // ✨ Fixed: Explicitly target the first element string index
-            const arg = cmdStr.substring(cmdStr.indexOf(parts[0]) + parts[0].length).trim(); // ✨ Fixed: Extract arguments cleanly based on command keyword length
+            const cmd = parts[0].toLowerCase();
+            const arg = cmdStr.substring(cmdStr.indexOf(parts[0]) + parts[0].length).trim(); // ✨ Fixed: Calculate indexing using primitive string key bounds
             switch (cmd) {
                 case 'help':
                     printLine(helpText);
@@ -116,16 +116,7 @@ Type 'help' to view available commands.
                         const roleData = sandboxFS[currentContext.currentPath][currentContext.activeAgent];
                         if (roleData && roleData.files) { printLine(roleData.files.join('    ')); }
                         else { printLine(`ls: current agent matrix directory is empty.`); }
-                    } else {
-                        inputField.disabled = true;
-                        const targets = ['index.html', 'about.html', 'archive.html', 'gallery.html', 'search.json', 'feed.xml', '404.html'];
-                        let discovered = [];
-                        let probes = targets.map(t => fetch('/' + t, { method: 'HEAD' }).then(res => { if (res.ok) discovered.push(t); }));
-                        Promise.all(probes).then(() => {
-                            inputField.disabled = false; inputField.focus();
-                            printLine(discovered.length > 0 ? discovered.join('    ') : 'ls: no structural public nodes exposed in this segment.');
-                        });
-                    }
+                    } else { printLine(`ls: index map locked: Root indexing restricted by environment layer.`); }
                     break;
                 case 'cat':
                     if (!arg) { printLine('usage: cat [file_name]'); break; }
@@ -133,21 +124,7 @@ Type 'help' to view available commands.
                         const roleData = sandboxFS[currentContext.currentPath][currentContext.activeAgent];
                         if (roleData && roleData.content && roleData.content[arg]) { printLine(roleData.content[arg]); }
                         else { printLine(`cat: ${arg}: No such node stream in your agent inventory profile`); }
-                    } else {
-                        let targetFile = arg;
-                        if (!targetFile.startsWith('/')) targetFile = '/' + targetFile;
-                        inputField.disabled = true;
-                        fetch(targetFile).then(res => {
-                            if (!res.ok) throw new Error();
-                            return res.text();
-                        }).then(text => {
-                            inputField.disabled = false; inputField.focus();
-                            printLine(text.slice(0, 1500) + (text.length > 1500 ? '\n... [TRUNCATED SYSTEM STREAM PAYLOAD]' : ''));
-                        }).catch(() => {
-                            inputField.disabled = false; inputField.focus();
-                            printLine(`cat: ${arg}: Standard physical file stream resource not found`);
-                        });
-                    }
+                    } else { printLine(`cat: ${arg}: Access denied or unreadable hardware stream descriptor`); }
                     break;
                 case 'cd':
                     if (!arg || arg === '~' || arg === '/') {
