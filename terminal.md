@@ -81,14 +81,7 @@ Type 'help' to view available commands.
                         if (roleData && roleData.files) { printLine(roleData.files.join('    ')); }
                         else { printLine(`ls: current agent matrix directory is empty.`); }
                     } else {
-                        inputField.disabled = true;
-                        const targets = ['index.html', 'about.html', 'archive.html', 'gallery.html', 'search.json', 'feed.xml', '404.html'];
-                        let discovered = [];
-                        let probes = targets.map(t => fetch('/' + t, { method: 'HEAD' }).then(res => { if (res.ok) discovered.push(t); }));
-                        Promise.all(probes).then(() => {
-                            inputField.disabled = false; inputField.focus();
-                            printLine(discovered.length > 0 ? discovered.join('    ') : 'ls: no structural public nodes exposed in this segment.');
-                        });
+                        printLine(`ls: indexing restricted: Use 'cd' to break into a baseline narrative sector.`);
                     }
                     break;
                 case 'cat':
@@ -98,19 +91,7 @@ Type 'help' to view available commands.
                         if (roleData && roleData.content && roleData.content[arg]) { printLine(roleData.content[arg]); }
                         else { printLine(`cat: ${arg}: No such node stream in your agent inventory profile`); }
                     } else {
-                        let targetFile = arg;
-                        if (!targetFile.startsWith('/')) targetFile = '/' + targetFile;
-                        inputField.disabled = true;
-                        fetch(targetFile).then(res => {
-                            if (!res.ok) throw new Error();
-                            return res.text();
-                        }).then(text => {
-                            inputField.disabled = false; inputField.focus();
-                            printLine(text.slice(0, 1500) + (text.length > 1500 ? '\n... [TRUNCATED SYSTEM STREAM PAYLOAD]' : ''));
-                        }).catch(() => {
-                            inputField.disabled = false; inputField.focus();
-                            printLine(`cat: ${arg}: Standard physical file stream resource not found`);
-                        });
+                        printLine(`cat: ${arg}: Permission denied. Access metadata stream inside a sector.`);
                     }
                     break;
                 case 'cd':
@@ -126,16 +107,7 @@ Type 'help' to view available commands.
                             currentContext.isSandboxActive = true;                           
                             const availableAgents = Object.keys(sandboxFS[target]);
                             const rollingName = availableAgents[Math.floor(Math.random() * availableAgents.length)];                           
-                            printLine(`Warning: Shifted tracking path to internal sandbox loop...\nIdentity matrix corrupted. Quantum handshake shift completed.`);                            
-                            syncPromptUI(rollingName, target);
-                            break;
-                        }
-                        /* checkpoint fallback: absolute static safety redirect block */
-                        if (target === '/sandbox/') {
-                            currentContext.isSandboxActive = true;
-                            const staticAgents = ['M.E.M.O.', 'Lyin_', 'invidia'];
-                            const rollingName = staticAgents[Math.floor(Math.random() * staticAgents.length)];
-                            printLine(`Warning: Sandbox dynamic override routing active.\nIdentity matrix corrupted. Quantum handshake shift completed.`);
+                            printLine(`Warning: Entering unmapped sandbox sector...\nIdentity matrix corrupted. Dynamic quantum handshake completed.`);                            
                             syncPromptUI(rollingName, target);
                             break;
                         }
