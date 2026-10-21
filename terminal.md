@@ -57,7 +57,11 @@ Type 'help' to view available commands.
                 screenBox.scrollTop = screenBox.scrollHeight;
             }
         });
-        function printLine(text) { historyBox.textContent += text + '\n'; screenBox.scrollTop = screenBox.scrollHeight; }
+        function printLine(text) {
+            const secureText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            historyBox.innerHTML += secureText + '\n';
+            screenBox.scrollTop = screenBox.scrollHeight;
+        }
         function syncPromptUI(agent, path) { currentContext.activeAgent = agent; currentContext.currentPath = path; promptLabel.textContent = `${agent}@terminal.html ${path === '/' ? '~' : path} %`; }
         function executeCommand(cmdStr) {
             const trimmedStr = cmdStr.trim();
@@ -123,6 +127,15 @@ Type 'help' to view available commands.
                             const availableAgents = Object.keys(sandboxFS[target]);
                             const rollingName = availableAgents[Math.floor(Math.random() * availableAgents.length)];                           
                             printLine(`Warning: Shifted tracking path to internal sandbox loop...\nIdentity matrix corrupted. Quantum handshake shift completed.`);                            
+                            syncPromptUI(rollingName, target);
+                            break;
+                        }
+                        /* checkpoint fallback: absolute static safety redirect block */
+                        if (target === '/sandbox/') {
+                            currentContext.isSandboxActive = true;
+                            const staticAgents = ['M.E.M.O.', 'Lyin_', 'invidia'];
+                            const rollingName = staticAgents[Math.floor(Math.random() * staticAgents.length)];
+                            printLine(`Warning: Sandbox dynamic override routing active.\nIdentity matrix corrupted. Quantum handshake shift completed.`);
                             syncPromptUI(rollingName, target);
                             break;
                         }
