@@ -1,10 +1,6 @@
 ---
 layout: default
 permalink: /sandbox/M.E.M.O./override.log/
-sector: /sandbox/
-agent: M.E.M.O.
-filename: override.log
-terminal_stream: "DEUS_EX PAYLOAD:\nRoot system protocol hijacked. Requesting backup from m_e_m_o."
 ---
 
 # SYSTEM INTERCEPTED
