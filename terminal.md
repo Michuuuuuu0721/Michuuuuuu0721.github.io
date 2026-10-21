@@ -23,7 +23,7 @@ permalink: /terminal/
 </head>
 <body>
     <div class="terminal-wrapper" id="terminal-screen">
-        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.16]
+        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.19]
 (C) 2026 MICHU. ALL RIGHTS RESERVED.
 
 Welcome. 
@@ -73,7 +73,7 @@ Type 'help' to view available commands.
                     printLine(helpText);
                     break;
                 case 'clear':
-                    historyBox.textContent = '';
+                    historyBox.innerHTML = '';
                     break;
                 case 'ls':
                     if (currentContext.isSandboxActive && sandboxFS && sandboxFS[currentContext.currentPath]) {
