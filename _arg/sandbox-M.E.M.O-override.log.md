@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 permalink: /sandbox/M.E.M.O./override.log/
 ---
 
