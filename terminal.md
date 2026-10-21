@@ -79,10 +79,31 @@ Type 'help' to view available commands.
         </div>
     </div>
     <script>
+        const inputField = document.getElementById('user-input');
+        const historyBox = document.getElementById('history-box');
+        const screenBox = document.getElementById('terminal-screen');
+        const promptLabel = document.getElementById('terminal-prompt');        
+        const helpText = `Available commands:\n  cd [dir]    Dynamic routing jump to any valid page suffix / permalink\n  ls          List memory nodes or structural entities in current sector\n  cat [file]  Read stream payload from a specific target node\n  clear       Clear the terminal screen\n  help        Display this information map`;
+        let currentContext = { isSandboxActive: false, activeAgent: 'visitor', currentPath: '/' };
+        let sandboxFS = {};
+        fetch('/arg_gateway.json').then(res => res.json()).then(data => { sandboxFS = data; }).catch(err => { printLine('Warning: Remote blueprint gateway mapping offline.'); });
+        document.addEventListener('click', () => { inputField.focus(); });
+        inputField.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const rawInput = this.value;
+                const cleanInput = rawInput.trim();                  
+                printLine(`${currentContext.activeAgent}@terminal.html ${currentContext.currentPath === '/' ? '~' : currentContext.currentPath} % ${rawInput}`);                
+                if (cleanInput.length > 0) { executeCommand(cleanInput); }
+                this.value = '';
+                screenBox.scrollTop = screenBox.scrollHeight;
+            }
+        });
+        function printLine(text) { historyBox.textContent += text + '\n'; screenBox.scrollTop = screenBox.scrollHeight; }
+        function syncPromptUI(agent, path) { currentContext.activeAgent = agent; currentContext.currentPath = path; promptLabel.textContent = `${agent}@terminal.html ${path === '/' ? '~' : path} %`; }
         function executeCommand(cmdStr) {
             const parts = cmdStr.split(/\s+/);
-            const cmd = parts[0].toLowerCase();
-            const arg = cmdStr.substring(cmdStr.indexOf(parts[0]) + parts[0].length).trim(); // ✨ 完美修复：完整抓取后面所有的参数，绝不吞码
+            const cmd = parts[0].toLowerCase(); // ✨ Fixed: Explicitly target the first element string index
+            const arg = cmdStr.substring(cmdStr.indexOf(parts[0]) + parts[0].length).trim(); // ✨ Fixed: Extract arguments cleanly based on command keyword length
             switch (cmd) {
                 case 'help':
                     printLine(helpText);
