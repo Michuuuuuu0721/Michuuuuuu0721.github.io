@@ -23,7 +23,7 @@ permalink: /terminal/
 </head>
 <body>
     <div class="terminal-wrapper" id="terminal-screen">
-        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.12]
+        <div class="output-history" id="history-box">CORE ARCHITECTURE [VERSION 1.0.13]
 (C) 2026 MICHU. ALL RIGHTS RESERVED.
 
 Welcome. 
@@ -44,10 +44,11 @@ Type 'help' to view available commands.
         const helpText = `Available commands:\n  cd [dir]    Dynamic routing jump to any valid page suffix / permalink\n  ls          List memory nodes or structural entities in current sector\n  cat [file]  Read stream payload from a specific target node\n  clear       Clear the terminal screen\n  help        Display this information map`;
         let currentContext = { isSandboxActive: false, activeAgent: 'visitor', currentPath: '/' };
         let sandboxFS = {};
-        fetch('/arg_gateway.json').then(res => res.json()).then(data => { sandboxFS = data; }).catch(err => { printLine('Warning: Remote blueprint gateway mapping offline.'); });
+        fetch('/arg_gateway.json').then(res => res.json()).then(data => { sandboxFS = data || {}; }).catch(err => { sandboxFS = {}; printLine('Warning: Remote blueprint gateway mapping offline.'); });
         document.addEventListener('click', () => { inputField.focus(); });
         inputField.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
+                event.preventDefault();
                 const rawInput = this.value;
                 const cleanInput = rawInput.trim();                  
                 printLine(`${currentContext.activeAgent}@terminal.html ${currentContext.currentPath === '/' ? '~' : currentContext.currentPath} % ${rawInput}`);                
@@ -59,9 +60,10 @@ Type 'help' to view available commands.
         function printLine(text) { historyBox.textContent += text + '\n'; screenBox.scrollTop = screenBox.scrollHeight; }
         function syncPromptUI(agent, path) { currentContext.activeAgent = agent; currentContext.currentPath = path; promptLabel.textContent = `${agent}@terminal.html ${path === '/' ? '~' : path} %`; }
         function executeCommand(cmdStr) {
-            const parts = cmdStr.split(/\s+/);
-            const cmd = parts[0].toLowerCase();
-            const arg = cmdStr.substring(cmdStr.indexOf(parts[0]) + parts[0].length).trim();
+            const trimmedStr = cmdStr.trim();
+            const firstSpace = trimmedStr.indexOf(' ');
+            const cmd = (firstSpace === -1 ? trimmedStr : trimmedStr.substring(0, firstSpace)).toLowerCase();
+            const arg = (firstSpace === -1 ? "" : trimmedStr.substring(firstSpace).trim());
             switch (cmd) {
                 case 'help':
                     printLine(helpText);
@@ -70,7 +72,7 @@ Type 'help' to view available commands.
                     historyBox.textContent = '';
                     break;
                 case 'ls':
-                    if (currentContext.isSandboxActive && sandboxFS[currentContext.currentPath]) {
+                    if (currentContext.isSandboxActive && sandboxFS && sandboxFS[currentContext.currentPath]) {
                         const roleData = sandboxFS[currentContext.currentPath][currentContext.activeAgent];
                         if (roleData && roleData.files) { printLine(roleData.files.join('    ')); }
                         else { printLine(`ls: current agent matrix directory is empty.`); }
@@ -87,7 +89,7 @@ Type 'help' to view available commands.
                     break;
                 case 'cat':
                     if (!arg) { printLine('usage: cat [file_name]'); break; }
-                    if (currentContext.isSandboxActive && sandboxFS[currentContext.currentPath]) {
+                    if (currentContext.isSandboxActive && sandboxFS && sandboxFS[currentContext.currentPath]) {
                         const roleData = sandboxFS[currentContext.currentPath][currentContext.activeAgent];
                         if (roleData && roleData.content && roleData.content[arg]) { printLine(roleData.content[arg]); }
                         else { printLine(`cat: ${arg}: No such node stream in your agent inventory profile`); }
@@ -116,7 +118,7 @@ Type 'help' to view available commands.
                         let target = arg;
                         if (!target.startsWith('/')) target = '/' + target;
                         if (!target.endsWith('/')) target = target + '/';
-                        if (sandboxFS[target]) {
+                        if (sandboxFS && sandboxFS[target]) {
                             currentContext.isSandboxActive = true;                           
                             const availableAgents = Object.keys(sandboxFS[target]);
                             const rollingName = availableAgents[Math.floor(Math.random() * availableAgents.length)];                           
