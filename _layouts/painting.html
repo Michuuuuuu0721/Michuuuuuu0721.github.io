@@ -11,21 +11,23 @@
             background-color: black !important; 
             color: white !important;
             font-family: sans-serif; 
-            min-height: 100vh;
+            min-height: 100vh; 
             display: flex; 
             flex-direction: column;
             align-items: center; 
-            padding: 20px;
+            padding: 40px 20px;
             box-sizing: border-box;
         }
         .art-container { 
             max-width: 90%; 
-            max-height: 70vh; 
-            text-align: center; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
         }
         .art-container img { 
             max-width: 100%; 
-            max-height: 70vh; 
+            max-height: 80vh; 
             object-fit: contain; 
         }
         .info-box { 
@@ -68,8 +70,13 @@
 <body>
 
     <div class="art-container">
-        <!-- image path -->
-        <img src="{{ page.image_high }}" alt="{{ page.title }}" loading="eager" decoding="async">
+        {% if page.image_high.first %}
+            {% for img_url in page.image_high %}
+                <img src="{{ img_url }}" alt="{{ page.title }} - {{ forloop.index }}" loading="eager" decoding="async">
+            {% endfor %}
+        {% else %}
+            <img src="{{ page.image_high }}" alt="{{ page.title }}" loading="eager" decoding="async">
+        {% endif %}
     </div>
     
     <div class="info-box">
